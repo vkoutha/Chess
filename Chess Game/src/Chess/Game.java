@@ -33,7 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 public class Game implements ActionListener, MouseListener, KeyListener{
-
+	
 	static Game game;
 	static SecondaryFrame secondaryFrame;
 	static Renderer renderer;
