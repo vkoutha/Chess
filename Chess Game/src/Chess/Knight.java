@@ -223,6 +223,7 @@ public class Knight implements Piece{
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
 		
+		/*
 		Graphics2D g2 = (Graphics2D) g;
 		AffineTransform old = g2.getTransform();
        
@@ -240,7 +241,13 @@ public class Knight implements Piece{
 		//DRAWS THE KNIGHT BASE
 		g.fillRect(GameData.getShapeStartingX(column, GameData.KNIGHT_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.KNIGHT_BASE_HEIGHT)+30, GameData.KNIGHT_BASE_WIDTH, GameData.KNIGHT_BASE_HEIGHT);
 		g.fillOval(GameData.getShapeStartingX(column, GameData.KNIGHT_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.KNIGHT_BASE_HEIGHT)+20, GameData.KNIGHT_BASE_WIDTH, GameData.KNIGHT_BASE_HEIGHT);
-
+		*/
+		
+		try {
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KNIGHT_PIECE_IMAGE_PLAYER_1 : GameData.KNIGHT_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH), (row*GameData.TILE_HEIGHT), null);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 
 	}
 
@@ -250,7 +257,5 @@ public class Knight implements Piece{
 			return new Knight(row, column, player);
 	}
 
-	
-	
 
 }

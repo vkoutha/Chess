@@ -63,7 +63,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 * Constructor for Game Class, creates inital game frame, renderer class, and creates game file folder if necessary
 	 */
 	public Game() {
-
+		
 		Timer timer = new Timer(20, this);
 		formatter = new DecimalFormat("#####.##");
 		renderer = new Renderer();

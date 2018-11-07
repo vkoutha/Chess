@@ -300,7 +300,7 @@ public class Queen implements Piece{
 	@Override
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
-		
+	/*	
 		g.setColor(color);
 		
 		//DRAWS THE QUEEN HEAD
@@ -325,7 +325,13 @@ public class Queen implements Piece{
 		//DRAWS THE QUEEN BASE
 		g.fillRect(GameData.getShapeStartingX(column, GameData.QUEEN_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.QUEEN_BASE_HEIGHT)+35, GameData.QUEEN_BASE_WIDTH, GameData.QUEEN_BASE_HEIGHT);
 		g.fillOval(GameData.getShapeStartingX(column, GameData.QUEEN_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.QUEEN_BASE_HEIGHT)+30, GameData.QUEEN_BASE_WIDTH, GameData.QUEEN_BASE_HEIGHT);
+	 */
 
+		try {
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.QUEEN_PIECE_IMAGE_PLAYER_1 : GameData.QUEEN_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)+3, (row*GameData.TILE_HEIGHT)+10, null);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		
 	}
 

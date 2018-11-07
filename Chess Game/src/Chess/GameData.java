@@ -2,13 +2,24 @@ package Chess;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class GameData {
-
+public class GameData{
+	
+	static {
+		
+		try {
+			PIECE_SPRITES = ImageIO.read(GameData.class.getResource("sprites.png"));
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 //-----------------------------------------------------------------
 
 	public final static int WIDTH = 900;
@@ -148,24 +159,44 @@ public class GameData {
 
 //-----------------------------------------------------------------
 	
-	public static final Icon queenIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("queen.png")).getImage().getScaledInstance(200, 140, Image.SCALE_DEFAULT));
-	public static final Icon bishopIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("bishop.png")).getImage().getScaledInstance(170, 135, Image.SCALE_DEFAULT));
-	public static final Icon rookIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("rook.png")).getImage().getScaledInstance(180, 130, Image.SCALE_DEFAULT));
-	public static final Icon knightIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("knight.png")).getImage().getScaledInstance(180, 190, Image.SCALE_DEFAULT));
+	public static BufferedImage PIECE_SPRITES;
 	
-	public static final Image frameIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("gameIcon.png")).getImage().getScaledInstance(180, 190, Image.SCALE_DEFAULT)).getImage();
+	public static final Image KING_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(100, 115, Image.SCALE_SMOOTH);
+	public static final Image KING_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(100, 115, Image.SCALE_SMOOTH);
+	
+	public static final Image QUEEN_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(336, 0, 307, 336).getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+	public static final Image QUEEN_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(336, 331, 307, 336).getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+	
+	public static final Image BISHOP_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(672, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	public static final Image BISHOP_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(672, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	
+	public static final Image KNIGHT_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1008, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	public static final Image KNIGHT_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1008, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	
+	public static final Image ROOK_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1300, 0, 305, 336).getScaledInstance(110, 120, Image.SCALE_SMOOTH);
+	public static final Image ROOK_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1300, 331, 300, 336).getScaledInstance(105, 120, Image.SCALE_SMOOTH);
+
+	public static final Image PAWN_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1650, 0, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+	public static final Image PAWN_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1650, 331, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+	
 //-----------------------------------------------------------------
-		
+
 	public static final String fileLocation = "C:\\Users\\Public\\Documents\\Chess Game\\Games";
 	
 	public static final File gameFileFolder = new File(fileLocation);
 	public static final File[] gameFiles = gameFileFolder.listFiles(); 
 	public static File gameFile;
 		
-	
 //-----------------------------------------------------------------
+	
+	public static final Icon queenIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("queen.png")).getImage().getScaledInstance(200, 140, Image.SCALE_DEFAULT));
+	public static final Icon bishopIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("bishop.png")).getImage().getScaledInstance(170, 135, Image.SCALE_DEFAULT));
+	public static final Icon rookIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("rook.png")).getImage().getScaledInstance(180, 130, Image.SCALE_DEFAULT));
+	public static final Icon knightIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("knight.png")).getImage().getScaledInstance(180, 190, Image.SCALE_DEFAULT));
+	
+	public static final Image frameIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("gameIcon.png")).getImage().getScaledInstance(180, 190, Image.SCALE_DEFAULT)).getImage();
 
-
+//-----------------------------------------------------------------
 	public enum player{
 		
 		PLAYER_1, 
@@ -200,6 +231,30 @@ public class GameData {
 	public static int getShapeStartingY(int row, int height){
 		
 		return row*GameData.TILE_WIDTH + (GameData.TILE_WIDTH-height)/2;
+		
+	}
+	
+	@SuppressWarnings("static-access")
+	public static Image getPieceSprite(Piece.type type, player player) {
+		
+		switch(type) {
+		
+		case KING:
+			return player == player.PLAYER_1 ? PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(100, 115, Image.SCALE_SMOOTH) : PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(100, 115, Image.SCALE_SMOOTH);
+		case QUEEN:
+			return player == player.PLAYER_1 ? PIECE_SPRITES.getSubimage(336, 0, 305, 336).getScaledInstance(100, 100, Image.SCALE_SMOOTH) : PIECE_SPRITES.getSubimage(336, 331, 305, 336).getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		case BISHOP:
+			return player == player.PLAYER_1 ? PIECE_SPRITES.getSubimage(672, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH) : PIECE_SPRITES.getSubimage(672, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+		case KNIGHT:
+			return player == player.PLAYER_1 ? PIECE_SPRITES.getSubimage(1008, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH) : PIECE_SPRITES.getSubimage(1008, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+		case ROOK:
+			return player == player.PLAYER_1 ? PIECE_SPRITES.getSubimage(1300, 0, 305, 336).getScaledInstance(110, 120, Image.SCALE_SMOOTH) : PIECE_SPRITES.getSubimage(1300, 331, 300, 336).getScaledInstance(105, 120, Image.SCALE_SMOOTH);
+		case PAWN:
+			return player == player.PLAYER_1 ? PIECE_SPRITES.getSubimage(1650, 0, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH) : PIECE_SPRITES.getSubimage(1650, 331, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+		default:
+			return null;
+			
+		}
 		
 	}
 	

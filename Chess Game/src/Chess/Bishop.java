@@ -246,7 +246,7 @@ public class Bishop implements Piece{
 	@Override
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
-		
+		/*
 		g.setColor(color);
 		
 		//MAKE THE BISHOP TOP
@@ -265,7 +265,13 @@ public class Bishop implements Piece{
 		
 		//MAKES THE BISHOP BASE
 		g.fillOval(GameData.getShapeStartingX(column, GameData.BISHOP_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.BISHOP_BASE_HEIGHT)+30, GameData.BISHOP_BASE_WIDTH, GameData.BISHOP_BASE_HEIGHT);
+		*/
 		
+		try {
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.BISHOP_PIECE_IMAGE_PLAYER_1 : GameData.BISHOP_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH), (row*GameData.TILE_HEIGHT)+5, null);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 	}
 
 	@Override

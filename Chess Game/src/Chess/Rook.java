@@ -246,6 +246,7 @@ public class Rook implements Piece{
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
 		
+		/*
 		g.setColor(color);
 		
 		//DRAWS THE THINGS THAT STICK UP
@@ -263,7 +264,13 @@ public class Rook implements Piece{
 		//DRAWS THE ROOK BASE
 		g.fillRect(GameData.getShapeStartingX(column, GameData.ROOK_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.ROOK_BASE_HEIGHT)+30, GameData.ROOK_BASE_WIDTH, GameData.ROOK_BASE_HEIGHT);
 		g.fillOval(GameData.getShapeStartingX(column, GameData.ROOK_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.ROOK_BASE_HEIGHT)+22, GameData.ROOK_BASE_WIDTH, GameData.ROOK_BASE_HEIGHT);
-
+	*/
+		
+		try {
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.ROOK_PIECE_IMAGE_PLAYER_1 : GameData.ROOK_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)-15, (row*GameData.TILE_HEIGHT)-5, null);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 	}
 
 	@Override

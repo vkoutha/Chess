@@ -54,7 +54,7 @@ public class GameCreationMenu {
 		slider = new JSlider();
 		slider.setBackground(Color.ORANGE);
 		slider.setMinimum(1);
-		slider.setMaximum(6);
+		slider.setMaximum(7);
 		slider.setValue(1);
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {

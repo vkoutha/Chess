@@ -392,7 +392,7 @@ public class Pawn implements Piece{
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
 		
-		g.setColor(color);
+/*		g.setColor(color);
 		
 		//MAKES THE PAWN HEAD
 		g.fillOval(GameData.getShapeStartingX(column, GameData.PAWN_HEAD_DIAMETER), GameData.getShapeStartingY(row, GameData.PAWN_HEAD_DIAMETER)-20, GameData.PAWN_HEAD_DIAMETER, GameData.PAWN_HEAD_DIAMETER);
@@ -408,8 +408,13 @@ public class Pawn implements Piece{
 		//MAKES THE PAWN BASE
 		g.fillRoundRect(GameData.getShapeStartingX(column, GameData.PAWN_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.PAWN_BASE_HEIGHT)+30, GameData.PAWN_BASE_WIDTH, GameData.PAWN_BASE_HEIGHT, 20, 20);
 		
+		*/
 		
-		
+		try {
+		g.drawImage(player == GameData.player.PLAYER_1 ? GameData.PAWN_PIECE_IMAGE_PLAYER_1 : GameData.PAWN_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)-16, (row*GameData.TILE_HEIGHT)-5, null);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

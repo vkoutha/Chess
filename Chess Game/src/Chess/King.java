@@ -270,7 +270,7 @@ public class King implements Piece{
 	@Override
 	public void render(Graphics g) {
 		// TODO Auto-generated method stub
-
+		/*
 		g.setColor(color);
 		
 		//DRAWS THE KING HEAD
@@ -297,7 +297,13 @@ public class King implements Piece{
 		g.fillRect(GameData.getShapeStartingX(column, GameData.KING_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.KING_BASE_HEIGHT)+35, GameData.KING_BASE_WIDTH, GameData.KING_BASE_HEIGHT);
 		g.fillOval(GameData.getShapeStartingX(column, GameData.KING_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.KING_BASE_HEIGHT)+30, GameData.KING_BASE_WIDTH, GameData.KING_BASE_HEIGHT);
 
+		*/
 		
+		try {
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)+3, (row*GameData.TILE_HEIGHT), null);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		
 	}
 
