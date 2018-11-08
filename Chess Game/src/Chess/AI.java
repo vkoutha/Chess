@@ -24,6 +24,8 @@ public class AI {
 	
 	public void randomMove() {
 		
+		long moveTime = System.currentTimeMillis();
+		
 		switch(GameData.AI_LEVEL) {
 		
 		case 1:
@@ -49,10 +51,7 @@ public class AI {
 			break;
 			
 		}
-		
-		Game.prevTileClicked = new int[] {pieceToMove.getRow(), pieceToMove.getColumn()};
-		Game.tileClicked = randomLocation;
-		
+
 		if (GameData.AI_LEVEL < 5) {
 			try {
 				if(Piece.getKing(player).isInCheck())
@@ -65,6 +64,18 @@ public class AI {
 			}
 		}
 		
+		if (System.currentTimeMillis() - moveTime < 700) {
+			try {
+				Thread.sleep(random.nextInt(1000)+500);
+				System.out.println("wait");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		Game.prevTileClicked = new int[] {pieceToMove.getRow(), pieceToMove.getColumn()};
+		Game.tileClicked = randomLocation;
 		Game.onValidMoveClick();
 		
 	}
@@ -540,7 +551,7 @@ public class AI {
 			
 			if (piecesWithSafeCheckMovesSize > 0) {
 			
-				for(Piece piece : pieces) {
+			/*	for(Piece piece : pieces) {
 					int[] ogLocation = {piece.getRow(), piece.getColumn()};
 					for(int[] move : piece.getPossibleMovesInCheck()) {
 						piece.setLocation(move);
@@ -555,7 +566,7 @@ public class AI {
 						}	
 					}
 				}
-				
+				*/
 				System.out.println("CHECK MOVE");
 				//PICKS A RANDOM NUMBER BASED ON ARRAYLIST SIZE OF PIECES
 				randomIndexPiece = randomPieceIndex(piecesWithSafeCheckMoves);

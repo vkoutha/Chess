@@ -6,7 +6,7 @@ import java.awt.Graphics;
 public class Tile {
 
 	int row, column;
-	boolean isSelected, isValidMove, isTileThatChecked, isAvailableMoveInCheck;
+	boolean isSelected, isValidMove, isTileMovedTo, isTileThatChecked, isAvailableMoveInCheck;
 	Color color;
 	
 	public Tile(int row, int column, Color color) {
@@ -147,6 +147,8 @@ public class Tile {
 				if(resetTileThatChecked == true && Game.board[rowNumber][columnNumber].isTileThatChecked)
 					Game.board[rowNumber][columnNumber].setAsTileThatChecked(false);
 				
+				if(Game.board[rowNumber][columnNumber].isTileMovedTo)
+					Game.board[rowNumber][columnNumber].setAsTileMovedTo(false);
 			}
 			
 		}
@@ -194,6 +196,22 @@ public class Tile {
 			
 	}
 	
+	public void setAsTileMovedTo(boolean setAsTileMovedTo) {
+		
+		if(setAsTileMovedTo == true) {
+			
+			color = GameData.TILE_COLOR_WHEN_MOVED_TO;
+			isTileMovedTo = true;
+			
+		}else{
+			
+			color = getTileColor(row, column);
+			isTileMovedTo = false;
+			
+		}
+		
+	}
+	
 	public void setAsTileThatChecked(boolean setAsTileThatChecked) {
 		
 		if(setAsTileThatChecked == true) {
@@ -223,7 +241,7 @@ public class Tile {
 		g.setColor(color);
 		g.fillRect(column * GameData.TILE_WIDTH, row * GameData.TILE_HEIGHT, GameData.TILE_WIDTH, GameData.TILE_HEIGHT);
 		
-		if(color == GameData.TILE_COLOR_WHEN_CLICKED || color == GameData.TILE_COLOR_WHEN_CLICKED_OCCUPIED || color == GameData.TILE_COLOR_WHEN_CHECKED || color == GameData.TILE_COLOR_WHEN_AVAILABLE_MOVE_IN_CHECK) {
+		if(color != GameData.TILE_COLOR_1_WHITE && color != GameData.TILE_COLOR_2_MAROON) {
 			
 			g.setColor(Color.white);
 			g.drawRect(column * GameData.TILE_WIDTH-1, row * GameData.TILE_HEIGHT-1, GameData.TILE_WIDTH, GameData.TILE_HEIGHT);

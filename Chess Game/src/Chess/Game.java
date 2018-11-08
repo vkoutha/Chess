@@ -299,8 +299,8 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				;
 		else {
 			bot.randomMove();
-			bot.pieceToMove = null;
-			bot.randomLocation = null;
+			
+		
 		}
 	}
 	
@@ -325,8 +325,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		return tileClicked != null && board[tileClicked[0]][tileClicked[1]].isValidMove && board[prevTileClicked[0]][prevTileClicked[1]].isSelected;
 		
 	}
-	
-	
+		
 	/**
 	 * Returns whether or not a clicked tile is not a possible piece/move selection
 	 * @return A boolean for whether or not a clicked tile is not a possible piece/move selection.
@@ -364,11 +363,15 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		 
 		Tile.getPiece(prevTileClicked[0], prevTileClicked[1]).move(tileClicked[0], tileClicked[1]);
 		Tile.getPiece(tileClicked[0], tileClicked[1]).increaseMoveCount();
+
 		moveCount++;
 		p1MoveCount++;
 					
 		Tile.resetTiles(true);
 		
+		board[tileClicked[0]][tileClicked[1]].setAsTileMovedTo(true);
+		board[prevTileClicked[0]][prevTileClicked[1]].setAsTileMovedTo(true);
+
 		storeBoardData();	
 		playPieceSoundEffect();	
 		showCheckMoves();
