@@ -250,7 +250,7 @@ public class Tile {
 			if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1) 
 				g.drawRect((column * GameData.TILE_WIDTH)-1, (row * GameData.TILE_HEIGHT)-1, GameData.TILE_WIDTH, GameData.TILE_HEIGHT);
 			else if (GameData.singlePlayer == false && Game.playerTurn == GameData.player.PLAYER_2) 
-				g.drawRect((GameData.WIDTH-GameData.WIDTH_COMPENSATOR+1-GameData.TILE_WIDTH-(column * GameData.TILE_WIDTH)),(GameData.HEIGHT-4-(GameData.TILE_HEIGHT)-(row * GameData.TILE_HEIGHT)), GameData.TILE_WIDTH-1, GameData.TILE_HEIGHT-1);
+				g.drawRect((GameData.WIDTH-GameData.WIDTH_COMPENSATOR+1-GameData.TILE_WIDTH-(column * GameData.TILE_WIDTH)),(GameData.HEIGHT-4-(GameData.TILE_HEIGHT)-(row * GameData.TILE_HEIGHT)), GameData.TILE_WIDTH, GameData.TILE_HEIGHT);
 
 		
 		
