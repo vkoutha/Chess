@@ -143,7 +143,6 @@ public class GameData{
 	public static final Color TILE_COLOR_2_MAROON = new Color(153, 76, 0); //MAROON
 	public static final Color TILE_COLOR_WHEN_CLICKED = new Color(255, 255, 75);
 	public static final Color TILE_COLOR_WHEN_CLICKED_OCCUPIED = Color.ORANGE;
-//	public static final Color TILE_COLOR_WHEN_MOVED_TO = new Color(183, 247, 74); //YELLOW GREEN	
 	public static final Color TILE_COLOR_WHEN_MOVED_TO = new Color(183, 255, 74); //YELLOW GREEN	
 
 	public static final Color TILE_COLOR_WHEN_CHECKED = new Color(220, 10, 30);

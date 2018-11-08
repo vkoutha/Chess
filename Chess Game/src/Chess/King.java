@@ -300,8 +300,11 @@ public class King implements Piece{
 		*/
 		
 		try {
-			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)+3, (row*GameData.TILE_HEIGHT), null);
-			}catch(Exception e) {
+			if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1)
+				g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)+3, (row*GameData.TILE_HEIGHT), null);
+			else
+				g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, ((GameData.COLUMNS-1-column) * GameData.TILE_WIDTH)+3, ((GameData.ROWS-1-row)*GameData.TILE_HEIGHT), null);
+		}catch(Exception e) {
 				e.printStackTrace();
 			}
 		
