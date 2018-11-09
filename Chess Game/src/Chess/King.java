@@ -210,9 +210,7 @@ public class King implements Piece{
 		case PLAYER_2:
 			
 			for(int z = 0; z < Game.player1Pieces.size(); z++) 
-					
 					for(int z1 = 0; z1 < Game.player1Pieces.get(z).getPossibleMoves().size(); z1++)                          
-						
 						if(Game.player1Pieces.get(z).getPossibleMoves().get(z1)[0] == row && Game.player1Pieces.get(z).getPossibleMoves().get(z1)[1] == column) 
 							return true;
 			break;
@@ -299,15 +297,11 @@ public class King implements Piece{
 
 		*/
 		
-		try {
-			if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1)
-				g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)+3, (row*GameData.TILE_HEIGHT), null);
-			else
-				g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, ((GameData.COLUMNS-1-column) * GameData.TILE_WIDTH)+3, ((GameData.ROWS-1-row)*GameData.TILE_HEIGHT), null);
-		}catch(Exception e) {
-				e.printStackTrace();
-			}
-		
+		if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1)
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)+3, (row*GameData.TILE_HEIGHT), null);
+		else
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KING_PIECE_IMAGE_PLAYER_1 : GameData.KING_PIECE_IMAGE_PLAYER_2, ((GameData.COLUMNS-1-column) * GameData.TILE_WIDTH)+3, ((GameData.ROWS-1-row)*GameData.TILE_HEIGHT), null);
+	
 	}
 
 	@Override

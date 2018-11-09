@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-public class AI {
+public class AI{
 
 	GameData.player player;
 	ArrayList<Piece> pieces;
@@ -51,7 +51,7 @@ public class AI {
 			break;
 			
 		}
-
+		
 		if (GameData.AI_LEVEL < 5) {
 			try {
 				if(Piece.getKing(player).isInCheck())
@@ -77,7 +77,7 @@ public class AI {
 		Game.prevTileClicked = new int[] {pieceToMove.getRow(), pieceToMove.getColumn()};
 		Game.tileClicked = randomLocation;
 		Game.onValidMoveClick();
-		
+
 	}
 	
 	/**
@@ -454,8 +454,28 @@ public class AI {
 	
 	private void level7Move() {
 		
-		//[start] CAPTURE	
-
+		int moveSum = 0;
+		for(Piece piece : pieces) {
+			int[] ogLocation = {piece.getRow(), piece.getColumn()};
+			for(int[] move : piece.getPossibleMovesInCheck()) {
+				if (willBeInCheck(piece, move)) {
+					piece.setLocation(move);
+					for(Piece opponent : Game.player1Pieces) 
+						moveSum+=opponent.getPossibleMovesInCheck().size();
+					
+					if (moveSum == 0) {
+						pieceToMove = piece;
+						randomLocation = move;
+						piece.setLocation(ogLocation);
+						System.out.println("doing this one checkamteing");
+						return;
+					}
+					piece.setLocation(ogLocation);
+				}
+			}
+			moveSum = 0;
+		}
+		
 		Piece pieceWithBestCapture = null;
 		int[] moveLocationCapture = null;
 		int highestCaptureValue = 0, lowestPieceWithKillValue = 0;
@@ -469,10 +489,7 @@ public class AI {
 								moveLocationCapture = possibleMoveLocation;
 								highestCaptureValue = Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue();
 							}
-		//[end] CAPTURE
-			
-		//[start] SAVE
-				
+							
 		Piece pieceToMoveForSave = null;
 		int[] moveLocationSave = null;
 		int[] ogPieceLocation = null;
@@ -484,7 +501,7 @@ public class AI {
 				
 				System.out.println("SAVINGGG a " + piece.getType());
 //--------------------------------------------------------------------------------------------------------------------------
-				//[start]SAVE BY MOVING PIECE
+				//SAVE BY MOVING PIECE
 
 				int highestCaptureWithSaveValue = 0;
 				System.out.println("save with 1 piece");
@@ -505,9 +522,8 @@ public class AI {
 						
 						}
 			}
-				//[end] SAVE BY MOVING PIECE
 //------------------------------------------------------------------------------------------------------------------------------------
-				//[start] SAVING WITH OTHER PIECES
+				//SAVING WITH OTHER PIECES
 
 				if (pieceToMoveForSave == null) {
 					System.out.println("saving with other pieces");
@@ -527,11 +543,9 @@ public class AI {
 						}
 					}	
 				}	
-				//[end] SAVING WITH OTHER PIECES
 			}
 		}
-				
-	//[end] SAVE
+
 
 		if (highestCaptureValue >= highestSaveValue) {
 			pieceToMove = pieceWithBestCapture;
@@ -551,22 +565,6 @@ public class AI {
 			
 			if (piecesWithSafeCheckMovesSize > 0) {
 			
-			/*	for(Piece piece : pieces) {
-					int[] ogLocation = {piece.getRow(), piece.getColumn()};
-					for(int[] move : piece.getPossibleMovesInCheck()) {
-						piece.setLocation(move);
-						for(Piece opponent : Game.player1Pieces) {
-							if (opponent.getPossibleMovesInCheck().size() != 0) {
-								piece.setLocation(ogLocation);
-								break;
-							}
-							pieceToMove = piece;
-							randomLocation = move;
-							return;
-						}	
-					}
-				}
-				*/
 				System.out.println("CHECK MOVE");
 				//PICKS A RANDOM NUMBER BASED ON ARRAYLIST SIZE OF PIECES
 				randomIndexPiece = randomPieceIndex(piecesWithSafeCheckMoves);
@@ -862,5 +860,5 @@ public class AI {
 		return random.nextInt(list.size());
 		
 	}
-	
+ 
 }

@@ -53,7 +53,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	int moveSum = 0, victoryMessage = 0;
 	long startTime = System.currentTimeMillis(), timePassed = 0;
 	
-	static boolean inPromotionMenu = false;
+	static boolean stalemate, inPromotionMenu = false;
 	boolean sizeInitialized = false, loadScreenCreated = false, secondaryScreenCreated = false;
 	
 	AI bot;
@@ -172,7 +172,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			break;
 						
 		case IN_GAME:
-			
+					
 			if(!sizeInitialized) {
 				
 				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR-5);
@@ -183,7 +183,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 
 			if(secondaryScreenCreated == false)
 				secondaryFrame = new SecondaryFrame();
-			
+
 			secondaryScreenCreated = true;
 			
 			//BOARD RENDERING
@@ -250,9 +250,9 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			if(Piece.getKing(GameData.player.PLAYER_2).isInCheck() && moveSum == 0) 
 				setWinner(GameData.player.PLAYER_1);
 			
-			if (Game.player1Pieces.size() == 1 && Game.player1Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.getKing(GameData.player.PLAYER_1).isInCheck()) 
+			if (Game.player1Pieces.size() == 1 && Game.player1Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.getKing(GameData.player.PLAYER_1).isInCheck() && playerTurn == GameData.player.PLAYER_1) 
 				setWinner(null);
-			else if (Game.player2Pieces.size() == 1 && Game.player2Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.getKing(GameData.player.PLAYER_2).isInCheck())
+			else if (Game.player2Pieces.size() == 1 && Game.player2Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.getKing(GameData.player.PLAYER_2).isInCheck() && playerTurn == GameData.player.PLAYER_2)
 				setWinner(null);
 			
 		}
@@ -265,20 +265,22 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	private void setWinner(GameData.player player) {
 		
-		if (player == null) {
-			JOptionPane.showMessageDialog(null, "Stalemate! Game is a draw!");
-			return;
-		}
-		
-		if(winner == null) {
+		if(winner == null && stalemate == false) {
 		
 			winner = player;
 			
 			if(winner == GameData.player.PLAYER_1)
 				JOptionPane.showMessageDialog(null, "Player 1 wins! Total move count: " + moveCount, "Victory!", JOptionPane.PLAIN_MESSAGE);
-			else
+			else if(winner == GameData.player.PLAYER_2)
 				JOptionPane.showMessageDialog(null, "Player 2 wins! Total move count: " + moveCount, "Victory!", JOptionPane.PLAIN_MESSAGE);
 
+			if (player == null) {
+				JOptionPane.showMessageDialog(null, "Stalemate! Game is a draw!");
+				stalemate = true;
+				return;
+			}
+			
+			
 		}
 		
 	}
@@ -297,11 +299,9 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				onInvalidMoveClick();
 			else
 				;
-		else {
+		else if(!inPromotionMenu) 
 			bot.randomMove();
-			
 		
-		}
 	}
 	
 	/**
@@ -489,6 +489,9 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				
 		try{
 			
+			FileWriter fw = new FileWriter(GameData.fileLocation.concat("\\").concat(gameFile.getName()));
+			fw.append("");
+			
 			outputStream = new ObjectOutputStream(new FileOutputStream(new File(GameData.fileLocation.concat("\\").concat(gameFile.getName())), false));
 			outputStream.writeObject(pastPieces);
 			outputStream.flush();
@@ -660,7 +663,9 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+	
 		game = new Game();
+		
 	}
 
 	

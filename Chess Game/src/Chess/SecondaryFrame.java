@@ -113,8 +113,10 @@ public class SecondaryFrame extends JPanel implements ActionListener{
 			else
 				Game.playerTurn = GameData.player.PLAYER_2;				
 			
-			if(Game.winner != null)
+			if(Game.winner != null || Game.stalemate) {
 				Game.winner = null;
+				Game.stalemate = false;
+			}
 			
 			for(int z = 0; z < Game.player1Pieces.size(); z++) 
 				if(Game.player1Pieces.get(z).getType() == Piece.type.PAWN && Game.player1Pieces.get(z).getRow() == 0)
