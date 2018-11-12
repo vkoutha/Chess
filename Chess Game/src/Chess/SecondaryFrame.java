@@ -1,6 +1,7 @@
 package Chess;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -29,52 +30,50 @@ public class SecondaryFrame extends JPanel implements ActionListener{
 	
 	public SecondaryFrame() {
 		
-	Timer timer = new Timer(20, this);
-	
-	frame = new JFrame("Chess");
-    frame.setIconImage(GameData.frameIcon);
-	frame.setSize(500, 250);
-	frame.getContentPane().setBackground(Color.ORANGE);
-    frame.setLocation(Game.frame.getX()-frame.getWidth(), Game.frame.getY());
-    frame.setLayout(null);
-	frame.setVisible(true);
-	frame.setResizable(false);
-	frame.add(this);
-	frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-	
-	startTime = System.currentTimeMillis();
-	
-	timeLabel = new JLabel("Time passed: #####");
-	timeLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
-	
-	frame.add(timeLabel);
-	timeLabel.setBounds((int)((frame.getWidth()/2) - (timeLabel.getPreferredSize().getWidth()/2))+5, 55, (int)timeLabel.getPreferredSize().getWidth()+111, (int)timeLabel.getPreferredSize().getHeight());
-	
-	JButton reverseButton = new JButton();
-	frame.add(reverseButton);	
-	reverseButton.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("undoArrow.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT)));
-	reverseButton.setBounds((int)((frame.getWidth()/2) - (reverseButton.getPreferredSize().getWidth()/2))+50, 120, (int)reverseButton.getPreferredSize().getWidth(), (int)reverseButton.getPreferredSize().getHeight());
-	removeBackground(reverseButton);
-	reverseButton.addActionListener(new ActionListener() { 
-		  public void actionPerformed(ActionEvent e) {
-			  reverseMove();
-		  }});
+		Timer timer = new Timer(20, this);
 		
-	JButton saveButton = new JButton();
-	frame.add(saveButton);	
-	saveButton.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("save.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT)));
-	saveButton.setBounds((int)((frame.getWidth()/2) - (saveButton.getPreferredSize().getWidth()/2))-50, 120, (int)saveButton.getPreferredSize().getWidth(), (int)saveButton.getPreferredSize().getHeight());
-	removeBackground(saveButton);
-	saveButton.addActionListener(new ActionListener() { 
-		  public void actionPerformed(ActionEvent e) {
-			  if(GameData.gameFile != null) 
-				  Game.saveGameFile(GameData.gameFile);
-		  }});
-	
-	timer.start();
-	
-
-	
+		frame = new JFrame("Chess");
+	    frame.setIconImage(GameData.frameIcon);
+		frame.setSize(500, 250);
+		frame.getContentPane().setBackground(Color.ORANGE);
+	    frame.setLocation(Game.frame.getX()-frame.getWidth(), Game.frame.getY());
+	    frame.setLayout(null);
+		frame.setVisible(true);
+		frame.setResizable(false);
+		frame.add(this);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		
+		startTime = System.currentTimeMillis();
+		
+		timeLabel = new JLabel("Time passed: #####");
+		timeLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
+		
+		frame.add(timeLabel);
+		timeLabel.setBounds((int)((frame.getWidth()/2) - (timeLabel.getPreferredSize().getWidth()/2))+5, 55, (int)timeLabel.getPreferredSize().getWidth()+111, (int)timeLabel.getPreferredSize().getHeight());
+		
+		JButton reverseButton = new JButton();
+		frame.add(reverseButton);	
+		reverseButton.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("undoArrow.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT)));
+		reverseButton.setBounds((int)((frame.getWidth()/2) - (reverseButton.getPreferredSize().getWidth()/2))+50, 120, (int)reverseButton.getPreferredSize().getWidth(), (int)reverseButton.getPreferredSize().getHeight());
+		removeBackground(reverseButton);
+		reverseButton.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) {
+				  reverseMove();
+			  }});
+			
+		JButton saveButton = new JButton();
+		frame.add(saveButton);	
+		saveButton.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("save.png")).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT)));
+		saveButton.setBounds((int)((frame.getWidth()/2) - (saveButton.getPreferredSize().getWidth()/2))-50, 120, (int)saveButton.getPreferredSize().getWidth(), (int)saveButton.getPreferredSize().getHeight());
+		removeBackground(saveButton);
+		saveButton.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) {
+				  if(GameData.gameFile != null) 
+					  Game.saveGameFile(GameData.gameFile);
+			  }});
+		
+		timer.start();
+			
 	}
 	
 	public void reverseMove() {
@@ -167,10 +166,10 @@ public class SecondaryFrame extends JPanel implements ActionListener{
 			timeLabel.setText("Time passed: " + timePassed);
 			if((timePassed > 10 && timePassed < 10.1) || (timePassed > 100 && timePassed < 100.1) || (timePassed > 1000 && timePassed < 1000.1))
 				timeLabel.setBounds((int)((frame.getWidth()/2) - (timeLabel.getPreferredSize().getWidth()/2))-5, 55, (int)timeLabel.getPreferredSize().getWidth()+100000, (int)timeLabel.getPreferredSize().getHeight());
-	
-			this.repaint();
-			
+				
 		}
+			
+		this.repaint();
 		
 	}
 	
@@ -181,9 +180,5 @@ public class SecondaryFrame extends JPanel implements ActionListener{
 		update();
 					
 	}
-	
-	
-	
-	
 	
 }

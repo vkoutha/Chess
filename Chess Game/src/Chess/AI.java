@@ -3,8 +3,10 @@ package Chess;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
-public class AI{
+public class AI implements Runnable{
 
 	GameData.player player;
 	ArrayList<Piece> pieces;
@@ -13,6 +15,7 @@ public class AI{
 	Piece pieceToMove = null;
 	int[] randomLocation = null;
 	int randomIndexPiece, randomIndexMove;
+	boolean inMove = false;
 	
 	public AI(){
 				
@@ -24,6 +27,7 @@ public class AI{
 	
 	public void randomMove() {
 		
+		inMove = true;
 		long moveTime = System.currentTimeMillis();
 		
 		switch(GameData.AI_LEVEL) {
@@ -77,7 +81,8 @@ public class AI{
 		Game.prevTileClicked = new int[] {pieceToMove.getRow(), pieceToMove.getColumn()};
 		Game.tileClicked = randomLocation;
 		Game.onValidMoveClick();
-
+		inMove = false;
+		
 	}
 	
 	/**
@@ -455,14 +460,15 @@ public class AI{
 	private void level7Move() {
 		
 		int moveSum = 0;
+		
 		for(Piece piece : pieces) {
 			int[] ogLocation = {piece.getRow(), piece.getColumn()};
 			for(int[] move : piece.getPossibleMovesInCheck()) {
-				if (willBeInCheck(piece, move)) {
+				if (willOpponentBeInCheck(piece, move)) {
 					piece.setLocation(move);
 					for(Piece opponent : Game.player1Pieces) 
 						moveSum+=opponent.getPossibleMovesInCheck().size();
-					
+				
 					if (moveSum == 0) {
 						pieceToMove = piece;
 						randomLocation = move;
@@ -474,6 +480,39 @@ public class AI{
 				}
 			}
 			moveSum = 0;
+		}
+		System.out.println(canBeCheckmated());
+		if (canBeCheckmated()) {
+			System.out.println("can be checkmated");
+			Piece pieceToSaveCheckmate = null;
+			int[] placeToMoveForSaveCheckmate = null;
+			int lowestPieceValue = 1000;
+			for(Piece own : pieces) {
+				int[] ogLocation = {own.getRow(), own.getColumn()};
+				if(own.getPossibleMovesInCheck().size() > 0 && own.getPieceValue() < lowestPieceValue) {
+					for(int[] ownMove : own.getPossibleMovesInCheck()) {
+						own.setLocation(ownMove);
+						if (!canBeCheckmated()) {
+							lowestPieceValue = own.getPieceValue();
+							pieceToSaveCheckmate = own;
+							placeToMoveForSaveCheckmate = ownMove;
+							System.out.println("SAVING FROM CHECKAMATEEEE");
+							if (own.getType() == Piece.type.PAWN) {
+								pieceToMove = pieceToSaveCheckmate;
+								randomLocation = placeToMoveForSaveCheckmate;
+								own.setLocation(ogLocation);
+								return;
+							}
+						}
+					}
+				}
+				own.setLocation(ogLocation);
+			}
+			if (pieceToSaveCheckmate != null && placeToMoveForSaveCheckmate != null) {
+				pieceToMove= pieceToSaveCheckmate;
+				randomLocation = placeToMoveForSaveCheckmate;
+				return;
+			}
 		}
 		
 		Piece pieceWithBestCapture = null;
@@ -696,7 +735,7 @@ public class AI{
 		ArrayList<int[]> safeCheckMoves = new ArrayList<int[]>();
 		
 		for(int[] moveLocation : piece.getPossibleMovesInCheck())
-			if (willBeInCheck(piece, moveLocation) && isSafe(piece, moveLocation)) 
+			if (willOpponentBeInCheck(piece, moveLocation) && isSafe(piece, moveLocation)) 
 				safeCheckMoves.add(moveLocation);
 		
 		return safeCheckMoves;
@@ -827,7 +866,7 @@ public class AI{
 				
 	}
 	
-	public boolean willBeInCheck(Piece piece, int[] moveLocation) {
+	public boolean willOpponentBeInCheck(Piece piece, int[] moveLocation) {
 		
 		int[] ogLocation = new int[] {piece.getRow(), piece.getColumn()};
 		piece.setLocation(moveLocation);
@@ -844,6 +883,47 @@ public class AI{
 
 	}
 	
+	private boolean canBeCheckmated() {
+		
+	/*	int[] ogLocation = null;
+		int moveSum = 0;
+		for(Piece opponent : Game.player1Pieces) { 
+			ogLocation = new int[] {opponent.getRow(), opponent.getColumn()};
+			for(int[] move : opponent.getPossibleMovesInCheck()) {
+				opponent.setLocation(move);
+				for(Piece own : pieces) 
+					moveSum+=own.getPossibleMovesInCheck().size();
+				if (moveSum == 0) { 
+					opponent.setLocation(ogLocation);
+					return true;
+				}
+				moveSum = 0;
+			}
+			opponent.setLocation(ogLocation);
+		}
+		
+		return false;*/
+		
+		for (Piece opponent : Game.player1Pieces) {
+			int[] ogLocation = {opponent.getRow(), opponent.getColumn()};
+			for(int[] move : opponent.getPossibleMovesInCheck()) {
+				opponent.setLocation(move);
+				if (Piece.getKing(player).isInCheck()) {
+					System.out.println("got to this");
+					int moveSum	= 0;
+					for(Piece own : pieces)
+						moveSum+=own.getPossibleMovesInCheck().size();
+					if (moveSum == 0) {
+						opponent.setLocation(ogLocation);
+						return true;
+					}
+				}
+			}
+			opponent.setLocation(ogLocation);
+		}
+		return false;
+	}
+	
 	private int randomPieceIndex(ArrayList<Piece> list) {
 		
 		randomIndexPiece = random.nextInt(list.size());
@@ -858,6 +938,12 @@ public class AI{
 	private int randomMoveIndex(ArrayList<int[]> list) {
 		
 		return random.nextInt(list.size());
+		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
 		
 	}
  

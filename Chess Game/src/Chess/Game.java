@@ -1,6 +1,7 @@
 package Chess;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -181,10 +182,10 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				
 			}
 
-			if(secondaryScreenCreated == false)
-				secondaryFrame = new SecondaryFrame();
-
-			secondaryScreenCreated = true;
+			if(secondaryScreenCreated == false) {
+    			secondaryFrame = new SecondaryFrame();
+				secondaryScreenCreated = true;
+			}
 			
 			//BOARD RENDERING
 			for(int rowNumber = 0; rowNumber < GameData.ROWS; rowNumber++) 					
@@ -488,10 +489,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		BufferedWriter writer = null;
 				
 		try{
-			
-			FileWriter fw = new FileWriter(GameData.fileLocation.concat("\\").concat(gameFile.getName()));
-			fw.append("");
-			
+						
 			outputStream = new ObjectOutputStream(new FileOutputStream(new File(GameData.fileLocation.concat("\\").concat(gameFile.getName())), false));
 			outputStream.writeObject(pastPieces);
 			outputStream.flush();
@@ -523,8 +521,8 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	}
 	
 	/**
-	 * Reads object and game data information stored in file to create identical game with exact same properties
-	 * @param file File to be accessed and have board and game data loaded from
+	 * Reads object and game data information stored in file to create identical game with the same properties
+	 * @param file File to have board and game data loaded from
 	 */
 	public static void loadGameFile(File file) {
 	
