@@ -53,6 +53,7 @@ public class GameCreationMenu {
 		
 		slider = new JSlider();
 		slider.setBackground(Color.ORANGE);
+
 		slider.setMinimum(1);
 		slider.setMaximum(8);
 		slider.setValue(1);

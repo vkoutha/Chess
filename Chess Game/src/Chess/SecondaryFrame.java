@@ -34,7 +34,7 @@ public class SecondaryFrame extends JPanel implements ActionListener{
 		
 		frame = new JFrame("Chess");
 	    frame.setIconImage(GameData.frameIcon);
-		frame.setSize(500, 250);
+		frame.setSize(350, 250);
 		frame.getContentPane().setBackground(Color.ORANGE);
 	    frame.setLocation(Game.frame.getX()-frame.getWidth(), Game.frame.getY());
 	    frame.setLayout(null);
