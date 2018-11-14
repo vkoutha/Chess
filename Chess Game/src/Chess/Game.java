@@ -177,9 +177,9 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 					
 			if(!sizeInitialized) {
 				
-				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR-12);
+				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR-7);
 				frame.setLocationRelativeTo(null);
-				frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
+			//	frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
 				sizeInitialized = true;
 				
 			}
@@ -191,8 +191,20 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			
 			//BOARD RENDERING
 			for(int rowNumber = 0; rowNumber < GameData.ROWS; rowNumber++) 					
-				for(int columnNumber = 0; columnNumber < GameData.COLUMNS; columnNumber++) 
+				for(int columnNumber = 0; columnNumber < GameData.COLUMNS; columnNumber++) { 
 						board[rowNumber][columnNumber].render(g);
+						if (columnNumber == 0) {
+							g.setColor(Color.BLACK);
+							g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
+							g.drawString("" + (GameData.ROWS-rowNumber), columnNumber*GameData.TILE_HEIGHT+5, rowNumber*GameData.TILE_WIDTH+18);
+						}
+						
+						if (rowNumber == 7) {
+							g.setColor(Color.BLACK);
+							g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
+							g.drawString("" + (char)(97+columnNumber), columnNumber*GameData.TILE_WIDTH+95, rowNumber*GameData.TILE_HEIGHT+18);
+						}
+				}
 			
 			for(int z = 0; z < player1Pieces.size(); z++)
 				player1Pieces.get(z).render(g);

@@ -795,14 +795,30 @@ public class AI implements Runnable{
 		//[start] NON-CAPTURE-SAVE MOVES
 		if (pieceToMove == null && randomLocation == null) {
 
-			ArrayList<Piece> piecesWithSafeCheckMoves = piecesWithSafeCheckMoves(), piecesWithAggressiveMoves = piecesWithAggressiveMoves(),
-					piecesWithSafeMoves = piecesWithSafeMoves(), piecesWithNoKill = piecesWithNoKill();
+			ArrayList<Piece> piecesWithSafeCheckMoves = piecesWithSafeCheckMoves(), piecesWithAggressiveMoves = null,
+					piecesWithSafeMoves = null, piecesWithNoKill = null;
+			
+			int piecesWithSafeCheckMovesSize = piecesWithSafeCheckMoves.size(), piecesWithAggressiveMovesSize = -1,
+					piecesWithSafeMovesSize = -1, piecesWithNoKillSize = -1;
+			
+			if (piecesWithSafeCheckMovesSize == 0) {
+				piecesWithAggressiveMoves = piecesWithAggressiveMoves();
+				piecesWithAggressiveMovesSize = piecesWithAggressiveMoves.size();
+			}
+			
+			if (piecesWithAggressiveMovesSize == 0) {
+				piecesWithSafeMoves = piecesWithSafeMoves();
+				piecesWithSafeMovesSize = piecesWithSafeMoves.size();
+			}
+			
+			if (piecesWithSafeMovesSize == 0) {
+				piecesWithNoKill = piecesWithNoKill();
+				piecesWithNoKillSize = piecesWithNoKill.size();
+			}
 			
 			ArrayList<int[]> safeCheckMoves, aggressiveMoves, safeMoves, nonKillableMoves;
 			
-			int piecesWithSafeCheckMovesSize = piecesWithSafeCheckMoves.size(), piecesWithAggressiveMovesSize = piecesWithAggressiveMoves.size(),
-					piecesWithSafeMovesSize = piecesWithSafeMoves.size(), piecesWithNoKillSize = piecesWithNoKill.size();
-			
+		
 			if (piecesWithSafeCheckMovesSize > 0) {
 			
 				System.out.println("CHECK MOVE");
