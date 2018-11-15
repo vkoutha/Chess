@@ -195,13 +195,13 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 						board[rowNumber][columnNumber].render(g);
 						if (columnNumber == 0) {
 							g.setColor(Color.BLACK);
-							g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
+							g.setFont(new Font("Bookman Old Style", Font.BOLD, 18));
 							g.drawString("" + (GameData.ROWS-rowNumber), columnNumber*GameData.TILE_HEIGHT+5, rowNumber*GameData.TILE_WIDTH+18);
 						}
 						
 						if (rowNumber == 7) {
 							g.setColor(Color.BLACK);
-							g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 18));
+							g.setFont(new Font("Bookman Old Style", Font.BOLD, 18));
 							g.drawString("" + (char)(97+columnNumber), columnNumber*GameData.TILE_WIDTH+95, rowNumber*GameData.TILE_HEIGHT+18);
 						}
 				}
