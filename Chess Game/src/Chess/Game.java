@@ -23,6 +23,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -33,6 +35,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+
+import org.omg.PortableServer.POAManagerPackage.State;
 
 public class Game implements ActionListener, MouseListener, KeyListener{
 	
@@ -179,7 +183,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				
 				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR-7);
 				frame.setLocationRelativeTo(null);
-			//	frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
+				frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
 				sizeInitialized = true;
 				
 			}
@@ -314,8 +318,15 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				onInvalidMoveClick();
 			else
 				;
-		else if(!inPromotionMenu) 
-			bot.randomMove();
+		else if(!inPromotionMenu) {
+			new Thread(new Runnable() {
+			    public void run() {
+			    	bot.inMove = true;
+					bot.randomMove();
+					bot.inMove = false;
+			    }
+			}).start();
+		}	
 		
 	}
 	
@@ -603,11 +614,14 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
 		
-		renderer.repaint();
-		
-		if(gameState == GameData.gameState.IN_GAME) 
-			update();
+		if (bot.inMove == false) {
+			
+			renderer.repaint();
+			
+			if(gameState == GameData.gameState.IN_GAME) 
+				update();
 
+		}
 	}
 	
 	@Override
