@@ -902,7 +902,7 @@ public class AI implements Runnable{
 		}
 		
 		System.out.println(canBeCheckmated());
-	/*	if (canBeCheckmated()) {
+		if (canBeCheckmated()) {
 			System.out.println("can be checkmated");
 			Piece pieceToSaveCheckmate = null;
 			int[] placeToMoveForSaveCheckmate = null;
@@ -935,7 +935,7 @@ public class AI implements Runnable{
 				return;
 			}
 		}
-		*/
+		
 	//	System.out.println("fogooaldoaiap");
 		Piece pieceWithBestCapture = null;
 		int[] moveLocationCapture = null;
@@ -1523,10 +1523,10 @@ public class AI implements Runnable{
 						movingPiece.setLocation(ogMovingLocation);
 					}
 				}
+				if (movingPiece != null) {
+					movingPiece.setLocation(ogMovingLocation);
+				}
 			}
-		if (movingPiece != null) {
-			movingPiece.setLocation(ogMovingLocation);
-		}
 			opponent.setLocation(ogLocation);
 		}
 		
