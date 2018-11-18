@@ -62,7 +62,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	static boolean stalemate, inPromotionMenu = false;
 	boolean sizeInitialized = false, loadScreenCreated = false, secondaryScreenCreated = false;
 	
-	AI bot;
+	static AI bot;
 	DecimalFormat formatter;
 	
 	/**
@@ -318,14 +318,8 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				onInvalidMoveClick();
 			else
 				;
-		else if(!inPromotionMenu) {
-			new Thread(new Runnable() {
-			    public void run() {
-			    	bot.inMove = true;
-					bot.randomMove();
-					bot.inMove = false;
-			    }
-			}).start();
+		else if(!inPromotionMenu) {			
+				bot.randomMove();
 		}	
 		
 	}
@@ -614,14 +608,11 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
 		
-		if (bot.inMove == false) {
-			
-			renderer.repaint();
-			
-			if(gameState == GameData.gameState.IN_GAME) 
-				update();
+		renderer.repaint();
+		
+		if(gameState == GameData.gameState.IN_GAME) 
+			update();
 
-		}
 	}
 	
 	@Override

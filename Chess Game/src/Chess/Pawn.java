@@ -232,7 +232,6 @@ public class Pawn implements Piece{
 		
 		for(int z = 0; z < possibleMoves.size(); z++) {
 			
-			
 			row = possibleMoves.get(z)[0];
 			column = possibleMoves.get(z)[1];
 			

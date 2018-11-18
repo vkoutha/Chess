@@ -7,7 +7,9 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.Timer;
@@ -71,6 +74,27 @@ public class SecondaryFrame extends JPanel implements ActionListener{
 			  public void actionPerformed(ActionEvent e) {
 				  if(GameData.gameFile != null) 
 					  Game.saveGameFile(GameData.gameFile);
+				  else {
+					  String gameName = JOptionPane.showInputDialog("Enter game name");
+					  if (gameName.trim().length() != 0) {
+						  File file = new File(GameData.fileLocation + "\\" + gameName + ".txt"); 
+						  if (file.exists()) {
+								JOptionPane.showMessageDialog(null, "Game with the same name already exists!", "Error!", JOptionPane.ERROR_MESSAGE);
+								return;
+							}else{
+								try {
+									file.createNewFile();
+									GameData.gameFile = file;
+									Game.saveGameFile(GameData.gameFile);
+								} catch (IOException ex) {
+									// TODO Auto-generated catch block
+									ex.printStackTrace();
+								}
+								
+							}
+						}
+				  }
+
 			  }});
 		
 		timer.start();

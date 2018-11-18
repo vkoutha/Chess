@@ -902,7 +902,7 @@ public class AI implements Runnable{
 		}
 		
 		System.out.println(canBeCheckmated());
-		if (canBeCheckmated()) {
+	/*	if (canBeCheckmated()) {
 			System.out.println("can be checkmated");
 			Piece pieceToSaveCheckmate = null;
 			int[] placeToMoveForSaveCheckmate = null;
@@ -923,6 +923,7 @@ public class AI implements Runnable{
 								own.setLocation(ogLocation);
 								return;
 							}
+							own.setLocation(ogLocation);
 						}
 					}
 				}
@@ -934,19 +935,22 @@ public class AI implements Runnable{
 				return;
 			}
 		}
-		
+		*/
+	//	System.out.println("fogooaldoaiap");
 		Piece pieceWithBestCapture = null;
 		int[] moveLocationCapture = null;
 		int highestCaptureValue = 0, lowestPieceWithKillValue = 0;
 		if(piecesWithKill().size() > 0)  
 			for(Piece piece : piecesWithKill()) 
 				for(int[] possibleMoveLocation : killableMoves(piece)) 
-					if ((Piece.getTotalPieceValue(player) > Piece.getTotalPieceValue(GameData.player.PLAYER_1)+(GameData.BISHOP_VALUE*3) ? Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() >= piece.getPieceValue() : Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() > piece.getPieceValue()) || (piece.getType() == Piece.type.PAWN && highestCaptureValue == 0) || (allPiecesSafe(piece, possibleMoveLocation) && piece.getPieceValue() > highestCaptureValue)) 
-							 if(Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() >= highestCaptureValue && (piece.getPieceValue() < lowestPieceWithKillValue || pieceWithBestCapture == null)){
+					if (((Piece.getTotalPieceValue(player) > Piece.getTotalPieceValue(GameData.player.PLAYER_1)+(GameData.BISHOP_VALUE*3) ? Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() >= piece.getPieceValue() : Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() > piece.getPieceValue()) || (allPiecesSafe(piece, possibleMoveLocation) && Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() > highestCaptureValue))) 
+							 if(Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() >= highestCaptureValue){
+								System.out.println("KILLINNNNNNNNn");
 								pieceWithBestCapture = piece;
 								lowestPieceWithKillValue = piece.getPieceValue();
 								moveLocationCapture = possibleMoveLocation;
 								highestCaptureValue = Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue();
+								System.out.println(piece.getType());
 							}
 							
 		Piece pieceToMoveForSave = null;
@@ -956,40 +960,11 @@ public class AI implements Runnable{
 		
 		for(Piece piece : pieces) {
 			
-			if (!isSafe(piece) && piece.getType() != Piece.type.PAWN && piece.getPieceValue() >= highestSaveValue) {
+			if (piece.getType() != Piece.type.PAWN && !isSafe(piece) && piece.getPieceValue() >= highestSaveValue) {
 				
-				System.out.println("SAVINGGG a " + piece.getType());
+				System.out.println("SAVINGGG a " + piece.getType());				
 //--------------------------------------------------------------------------------------------------------------------------
 				//SAVE BY MOVING PIECE
-				lowestSacrificeValue = 10000;
-				highestCaptureValue = 0;
-				opponentLoop:
-				for(Piece opponent : Game.player1Pieces) {
-					int[] ogOpponentLocation = {opponent.getRow(), opponent.getColumn()};
-					if (opponent.getPieceValue() > highestCaptureValue) {
-						for(int[] opponentMove : opponent.getPossibleMovesInCheck()) {
-							if(opponentMove[0] == piece.getRow() && opponentMove[1] == piece.getColumn()) {
-								opponent.setLocation(opponentMove);
-								for(Piece own : pieces) {
-									for(int[] ownMove : own.getPossibleMovesInCheck()) {
-										if(ownMove[0] == opponent.getRow() && ownMove[1] == opponent.getColumn() && own.getPieceValue() < lowestSacrificeValue && allPiecesSafe(own, ownMove)) {
-											pieceToMoveForSave = own;
-											moveLocationSave = ownMove;
-											lowestSacrificeValue = own.getPieceValue();
-											highestCaptureValue = opponent.getPieceValue();
-											opponent.setLocation(ogOpponentLocation);
-										}
-									}
-								}
-							}
-							if (pieceToMoveForSave != null) {
-								break opponentLoop;
-							}
-						}
-					}
-					opponent.setLocation(ogOpponentLocation);
-				}
-				
 				if (pieceToMoveForSave == null) {
 					int highestCaptureWithSaveValue = 0;
 					System.out.println("save with 1 piece");
@@ -1000,43 +975,52 @@ public class AI implements Runnable{
 								moveLocationSave = possibleMoveLocation;
 								highestSaveValue = piece.getPieceValue();
 								highestCaptureWithSaveValue = Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue();
-							//	break;
 								
 							}else if(highestCaptureWithSaveValue == 0){
 							
 							pieceToMoveForSave = piece;
 							moveLocationSave = possibleMoveLocation;
 							highestSaveValue = piece.getPieceValue();
-							if (allPiecesSafe(piece, moveLocationSave))
-								break;
-							
+						
 							}
 						}
 			}
 //------------------------------------------------------------------------------------------------------------------------------------
 				//SAVING WITH OTHER PIECES
 				int highestCaptureWithSaveValue = 0;
+				lowestSacrificeValue = 11110;
 				if (pieceToMoveForSave == null) {
 					System.out.println("saving with other pieces");
 					for(Piece ownPiece : pieces) {
-						if (ownPiece.getPieceValue() < piece.getPieceValue() && ownPiece.getPieceValue() < lowestSacrificeValue) {
+						if (ownPiece.getPieceValue() < lowestSacrificeValue) {
 							ogPieceLocation = new int[] {ownPiece.getRow(), ownPiece.getColumn()};
 							for(int[] location : ownPiece.getPossibleMovesInCheck()) {
-								ownPiece.setLocation(location);
-								if (isSafe(piece)){
-									pieceToMoveForSave = ownPiece;
-									moveLocationSave = location;
-									highestSaveValue = piece.getPieceValue();
-									lowestSacrificeValue = ownPiece.getPieceValue();
+							//	ownPiece.setLocation(location);
+								if (isSafe(piece) && (ownPiece.getType() == Piece.type.PAWN || isSafe(ownPiece, location))){
+									if (Tile.isOccupiedByOpponent(location[0], location[1], player) && Tile.getPiece(location[0], location[1]).getPieceValue() > highestCaptureWithSaveValue) {
+										pieceToMoveForSave = piece;
+										moveLocationSave = location;
+										highestSaveValue = piece.getPieceValue();
+										System.out.println("gunna kill something");
+										highestCaptureWithSaveValue = Tile.getPiece(location[0], location[1]).getPieceValue();
+									}else if (highestCaptureWithSaveValue == 0) {
+										pieceToMoveForSave = ownPiece;
+										moveLocationSave = location;
+										highestSaveValue = piece.getPieceValue();
+										lowestSacrificeValue = ownPiece.getPieceValue();
+										System.out.println("not gunna kill something");
+									}
 								}
 								ownPiece.setLocation(ogPieceLocation);
 							}
 						}
 					}	
 				}	
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 				//SACRIFICING PIECE BY KILLING ANOTHER THING IF IT CAN'T BE SAVED
-				if (pieceToMoveForSave == null && !isNotSafeAtAllMoves(piece)) {
+				if (pieceToMoveForSave == null && canNotBeSaved(piece)) {
 					for(int[] possibleMove : piece.getPossibleMovesInCheck()) {
 						if (Tile.isOccupied(possibleMove[0], possibleMove[1]) && Tile.getPiece(possibleMove[0], possibleMove[1]).getPieceValue() > highestCaptureWithSaveValue) {
 							System.out.println("sacrifice with a bang");
@@ -1047,9 +1031,9 @@ public class AI implements Runnable{
 						}
 					}
 				}
-				
 			}
 		}
+
 
 
 		if (highestCaptureValue >= highestSaveValue) {
@@ -1063,18 +1047,20 @@ public class AI implements Runnable{
 		//[start] NON-CAPTURE-SAVE MOVES
 		if (pieceToMove == null && randomLocation == null) {
 
-			ArrayList<Piece> piecesWithSafeCheckMoves = piecesWithSafeCheckMoves(), piecesWithAggressiveMoves = null,
+			ArrayList<Piece> piecesWithSafeCheckMoves = piecesWithSafeCheckMoves(), 
 					piecesWithSafeMoves = null, piecesWithNoKill = null;
 			
-			int piecesWithSafeCheckMovesSize = piecesWithSafeCheckMoves.size(), piecesWithAggressiveMovesSize = -1,
+			ArrayList mostAggressiveMove = null;
+			
+			int piecesWithSafeCheckMovesSize = piecesWithSafeCheckMoves.size(), mostAggressiveMoveSize = -1,
 					piecesWithSafeMovesSize = -1, piecesWithNoKillSize = -1;
 			
 			if (piecesWithSafeCheckMovesSize == 0) {
-				piecesWithAggressiveMoves = piecesWithAggressiveMoves();
-				piecesWithAggressiveMovesSize = piecesWithAggressiveMoves.size();
+				mostAggressiveMove = mostAggressiveMove();
+				mostAggressiveMoveSize = mostAggressiveMove.size();
 			}
 			
-			if (piecesWithAggressiveMovesSize == 0) {
+			if (mostAggressiveMoveSize == 0) {
 				piecesWithSafeMoves = piecesWithSafeMoves();
 				piecesWithSafeMovesSize = piecesWithSafeMoves.size();
 			}
@@ -1084,7 +1070,7 @@ public class AI implements Runnable{
 				piecesWithNoKillSize = piecesWithNoKill.size();
 			}
 			
-			ArrayList<int[]> safeCheckMoves, aggressiveMoves, safeMoves, nonKillableMoves;
+			ArrayList<int[]> safeCheckMoves, safeMoves, nonKillableMoves;
 			
 		
 			if (piecesWithSafeCheckMovesSize > 0) {
@@ -1101,16 +1087,19 @@ public class AI implements Runnable{
 				randomIndexMove = randomMoveIndex(safeCheckMoves);
 				randomLocation = safeCheckMoves.get(randomIndexMove);
 				
-			}else if(piecesWithAggressiveMovesSize > 0) {
+			}else if(mostAggressiveMoveSize > 0) {
 				
+				pieceToMove = (Piece) mostAggressiveMove.get(0);
+				randomLocation = (int[]) mostAggressiveMove.get(1);
 				System.out.println("AGGRESSIVE MOVE");
-				randomIndexPiece = randomPieceIndex(piecesWithAggressiveMoves);
+			
+			/*	randomIndexPiece = randomPieceIndex(piecesWithAggressiveMoves);
 				pieceToMove = piecesWithAggressiveMoves.get(randomIndexPiece);
 				
 				aggressiveMoves = aggressiveMoves(pieceToMove);
 				//PICKS A RANDOM NUMBER BASED ON ARRAYLIST SIZE OF MOVES
 				randomIndexMove = randomMoveIndex(aggressiveMoves);
-				randomLocation = aggressiveMoves.get(randomIndexMove);
+				randomLocation = aggressiveMoves.get(randomIndexMove); */
 				
 			}else if(piecesWithSafeMovesSize > 0) {
 				
@@ -1126,6 +1115,7 @@ public class AI implements Runnable{
 				
 			}else if (piecesWithNoKillSize > 0){
 				
+				System.out.println("NON KILLABLE MOVES");
 				//PICKS A RANDOM NUMBER BASED ON ARRAYLIST SIZE OF PIECES
 				randomIndexPiece = randomPieceIndex(piecesWithNoKill);
 				pieceToMove = piecesWithNoKill.get(randomIndexPiece);
@@ -1200,7 +1190,7 @@ public class AI implements Runnable{
 		ArrayList<int[]> safeMoves = new ArrayList<int[]>();
 		int[] ogLocation = {piece.getRow(), piece.getColumn()};
 		
-		for (int[] move : piece.getPossibleMovesInCheck()) { 
+		for (int[] move : piece.getPossibleMovesInCheck()) {
 			piece.setLocation(move);
 			if (allPiecesSafe()) {
 				safeMoves.add(move);
@@ -1219,7 +1209,7 @@ public class AI implements Runnable{
 		ArrayList<Piece> piecesWithSafeMoves = new ArrayList<Piece>();
 		
 		for(Piece piece : pieces)
-			if(safeMoves(piece).size() > 0)
+			if(piece.getType() != Piece.type.KING && safeMoves(piece).size() > 0)
 				piecesWithSafeMoves.add(piece);
 		
 		return piecesWithSafeMoves;
@@ -1255,7 +1245,7 @@ public class AI implements Runnable{
 			int[] ogLocation = {piece.getRow(), piece.getColumn()};
 			piece.setLocation(move);
 			for(Piece opponent : Game.player1Pieces) {
-				if(opponent.getType() != Piece.type.PAWN && canOpponentBeKilled(opponent) && allPiecesSafe()) {
+				if(opponent.getType() != Piece.type.PAWN && !isSafe(opponent) && piece.getPieceValue() < opponent.getPieceValue() && allPiecesSafe()) {
 					aggressiveMoves.add(move);
 				}	
 			}
@@ -1275,6 +1265,49 @@ public class AI implements Runnable{
 				piecesWithAggressiveMoves.add(piece);
 			
 		return piecesWithAggressiveMoves;
+		
+	}
+	
+	public <T> ArrayList<T> mostAggressiveMove(){
+		
+		ArrayList<T> aggressiveMove = new ArrayList<T>();
+
+		Piece pieceWithMostAggressiveMove = null;
+		int[] mostAggressiveMoveLocation = null;
+		int mostAggressiveMoveValue = 0;
+		for(Piece piece : pieces) {
+			for(int[] move : piece.getPossibleMovesInCheck()) {
+				int[] ogLocation = {piece.getRow(), piece.getColumn()};
+				piece.setLocation(move);
+				for(Piece opponent : Game.player1Pieces) {
+					if(opponent.getType() != Piece.type.PAWN && canOpponentBeKilled(opponent) && allPiecesSafe() && opponent.getPieceValue() > mostAggressiveMoveValue) {
+						mostAggressiveMoveValue = opponent.getPieceValue();
+						pieceWithMostAggressiveMove = piece;
+						mostAggressiveMoveLocation = move;
+						aggressiveMove.clear();
+						aggressiveMove.add(0, (T) piece);
+						aggressiveMove.add(1, (T) mostAggressiveMoveLocation);
+					}	
+				}
+				piece.setLocation(ogLocation);
+			}
+		}
+		return aggressiveMove;
+		
+		
+	}
+	
+	public boolean canNotBeSaved(Piece piece) {
+		
+		int[] ogLocation = {piece.getRow(), piece.getColumn()};
+		for(int[] move : piece.getPossibleMovesInCheck()) 
+			if (isSafe(piece, move)) {
+				piece.setLocation(ogLocation);
+				return false;
+			}
+			
+		piece.setLocation(ogLocation);
+		return true;
 		
 	}
 	
@@ -1422,16 +1455,6 @@ public class AI implements Runnable{
 				
 	}
 	
-	private boolean isNotSafeAtAllMoves(Piece piece) {
-		
-		for(int[] move : piece.getPossibleMovesInCheck())
-			if (isSafe(piece, move)) 
-				return false;
-		
-		return true;
-		
-	}
-	
 	public boolean willOpponentBeInCheck(Piece piece, int[] moveLocation) {
 		
 		int[] ogLocation = new int[] {piece.getRow(), piece.getColumn()};
@@ -1475,7 +1498,7 @@ public class AI implements Runnable{
 		for (Piece opponent : Game.player1Pieces) {
 			int[] ogLocation = {opponent.getRow(), opponent.getColumn()};
 			for(int[] move : opponent.getPossibleMovesInCheck()) {
-				if (Tile.isOccupied(move[0], move[1])) {
+				if (Tile.isOccupied(move[0], move[1]) && Tile.getPiece(move[0], move[1]).getType() != Piece.type.KING) {
 					movingPiece = Tile.getPiece(move[0], move[1]);
 					ogMovingLocation = new int[] {movingPiece.getRow(), movingPiece.getColumn()};
 					movingPiece.setLocation(new int[] {-1, -1});

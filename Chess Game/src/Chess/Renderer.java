@@ -9,9 +9,9 @@ public class Renderer extends JPanel{
 		
 		try{
 			
-		super.paintComponent(g);
-		Game.game.render(g);
-
+			super.paintComponent(g);
+			Game.game.render(g);
+			
 		}catch(Exception e) {
 			
 			//e.printStackTrace();

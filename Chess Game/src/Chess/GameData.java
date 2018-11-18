@@ -20,6 +20,7 @@ public class GameData{
 		}
 		
 	}
+	
 //-----------------------------------------------------------------
 
 	public static final int WIDTH = 900;
@@ -182,7 +183,8 @@ public class GameData{
 	
 //-----------------------------------------------------------------
 
-	public static final String fileLocation = "H:\\animal stuff\\Chess";
+	public static final String fileLocation = "C:\\Users\\Public\\Documents\\Chess Game\\Games";
+//	public static final String fileLocation = "H:\\animal stuff\\Chess";
 	
 	public static final File gameFileFolder = new File(fileLocation);
 	public static final File[] gameFiles = gameFileFolder.listFiles(); 
