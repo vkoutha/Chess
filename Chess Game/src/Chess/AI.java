@@ -917,26 +917,29 @@ public class AI implements Runnable{
 							pieceToSaveCheckmate = own;
 							placeToMoveForSaveCheckmate = ownMove;
 							System.out.println("SAVING FROM CHECKAMATEEEE");
-							if (own.getType() == Piece.type.PAWN) {
+						/*	if (own.getType() == Piece.type.PAWN) {
 								pieceToMove = pieceToSaveCheckmate;
 								randomLocation = placeToMoveForSaveCheckmate;
 								own.setLocation(ogLocation);
-								return;
-							}
+							}*/
 							own.setLocation(ogLocation);
+							if (!canBeCheckmated(pieceToSaveCheckmate, placeToMoveForSaveCheckmate)) {
+								pieceToMove= pieceToSaveCheckmate;
+								randomLocation = placeToMoveForSaveCheckmate;
+							//	return;
+							}
 						}
 					}
 				}
 				own.setLocation(ogLocation);
 			}
-			if (pieceToSaveCheckmate != null && placeToMoveForSaveCheckmate != null) {
+			if (pieceToSaveCheckmate != null && pieceToMove == null) {
 				pieceToMove= pieceToSaveCheckmate;
 				randomLocation = placeToMoveForSaveCheckmate;
 				return;
 			}
 		}
 		
-	//	System.out.println("fogooaldoaiap");
 		Piece pieceWithBestCapture = null;
 		int[] moveLocationCapture = null;
 		int highestCaptureValue = 0, lowestPieceWithKillValue = 0;
@@ -976,7 +979,7 @@ public class AI implements Runnable{
 								highestSaveValue = piece.getPieceValue();
 								highestCaptureWithSaveValue = Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue();
 								
-							}else if(highestCaptureWithSaveValue == 0){
+							}else if(highestCaptureWithSaveValue == 0 && allPiecesSafe(piece, possibleMoveLocation)){
 							
 							pieceToMoveForSave = piece;
 							moveLocationSave = possibleMoveLocation;
@@ -1243,11 +1246,16 @@ public class AI implements Runnable{
 		
 		for(int[] move : piece.getPossibleMovesInCheck()) {
 			int[] ogLocation = {piece.getRow(), piece.getColumn()};
-			piece.setLocation(move);
 			for(Piece opponent : Game.player1Pieces) {
-				if(opponent.getType() != Piece.type.PAWN && !isSafe(opponent) && piece.getPieceValue() < opponent.getPieceValue() && allPiecesSafe()) {
-					aggressiveMoves.add(move);
-				}	
+				if (isSafe(opponent)) {
+					piece.setLocation(move);
+					if(opponent.getType() != Piece.type.PAWN && !isSafe(opponent) && piece.getPieceValue() < opponent.getPieceValue() && allPiecesSafe()) {
+						System.out.println(opponent.getType());
+						aggressiveMoves.add(move);
+						break;
+					}	
+				}
+				
 			}
 			piece.setLocation(ogLocation);
 		}
@@ -1272,7 +1280,6 @@ public class AI implements Runnable{
 		
 		ArrayList<T> aggressiveMove = new ArrayList<T>();
 
-		Piece pieceWithMostAggressiveMove = null;
 		int[] mostAggressiveMoveLocation = null;
 		int mostAggressiveMoveValue = 0;
 		for(Piece piece : pieces) {
@@ -1282,7 +1289,6 @@ public class AI implements Runnable{
 				for(Piece opponent : Game.player1Pieces) {
 					if(opponent.getType() != Piece.type.PAWN && canOpponentBeKilled(opponent) && allPiecesSafe() && opponent.getPieceValue() > mostAggressiveMoveValue) {
 						mostAggressiveMoveValue = opponent.getPieceValue();
-						pieceWithMostAggressiveMove = piece;
 						mostAggressiveMoveLocation = move;
 						aggressiveMove.clear();
 						aggressiveMove.add(0, (T) piece);
@@ -1387,12 +1393,12 @@ public class AI implements Runnable{
 			ogOpponentLocation = new int[] {opponent.getRow(), opponent.getColumn()};
 			for(int[] opponentMove : opponent.getPossibleMovesInCheck()) {
 				opponent.setLocation(opponentMove);
-				if (piece.getRow() == opponentMove[0] && piece.getColumn() == opponentMove[1]  && (opponent.getPieceValue() > piece.getPieceValue() || !canBeKilled(opponent, opponentMove))) {
+				if (piece.getRow() == opponentMove[0] && piece.getColumn() == opponentMove[1] && (opponent.getPieceValue() > piece.getPieceValue() || !canBeKilled(opponent, opponentMove))) {
 					for(Piece own : pieces) {
 						ogOwnLocation = new int[] {own.getRow(), own.getColumn()};
 						for(int[] ownMove : own.getPossibleMovesInCheck()) {
 							own.setLocation(ownMove);
-							if(ownMove[0] == opponentMove[0] && ownMove[1] == opponentMove[1] && (own.getType() == Piece.type.PAWN || (own.getPieceValue() < piece.getPieceValue() && own.getPieceValue() < opponent.getPieceValue()) || !canBeKilled(own, ownMove))) {
+							if(ownMove[0] == opponentMove[0] && ownMove[1] == opponentMove[1] && (own.getType() == Piece.type.PAWN || (own.getPieceValue() <= piece.getPieceValue() && own.getPieceValue() <= opponent.getPieceValue()) || !canBeKilled(own, ownMove))) {
 								opponent.setLocation(ogOpponentLocation);
 								own.setLocation(ogOwnLocation);
 								return true;
@@ -1436,7 +1442,7 @@ public class AI implements Runnable{
 						ogOwnLocation = new int[] {own.getRow(), own.getColumn()};
 						for(int[] ownMove : own.getPossibleMovesInCheck()) {
 							own.setLocation(ownMove);
-							if(ownMove[0] == opponentMove[0] && ownMove[1] == opponentMove[1] && (own.getType() == Piece.type.PAWN || (own.getPieceValue() < piece.getPieceValue() && own.getPieceValue() < opponent.getPieceValue()) || !canBeKilled(own, ownMove))) {
+							if(ownMove[0] == opponentMove[0] && ownMove[1] == opponentMove[1] && (own.getType() == Piece.type.PAWN || (own.getPieceValue() <= piece.getPieceValue() && own.getPieceValue() <= opponent.getPieceValue()) || !canBeKilled(own, ownMove))) {
 								opponent.setLocation(ogOpponentLocation);
 								own.setLocation(ogOwnLocation);
 								piece.setLocation(ogLocation);
@@ -1473,25 +1479,6 @@ public class AI implements Runnable{
 	}
 	
 	private boolean canBeCheckmated() {
-		
-	/*	int[] ogLocation = null;
-		int moveSum = 0;
-		for(Piece opponent : Game.player1Pieces) { 
-			ogLocation = new int[] {opponent.getRow(), opponent.getColumn()};
-			for(int[] move : opponent.getPossibleMovesInCheck()) {
-				opponent.setLocation(move);
-				for(Piece own : pieces) 
-					moveSum+=own.getPossibleMovesInCheck().size();
-				if (moveSum == 0) { 
-					opponent.setLocation(ogLocation);
-					return true;
-				}
-				moveSum = 0;
-			}
-			opponent.setLocation(ogLocation);
-		}
-		
-		return false;*/
 		
 		Piece movingPiece = null;
 		int[] ogMovingLocation = null;
@@ -1530,6 +1517,53 @@ public class AI implements Runnable{
 			opponent.setLocation(ogLocation);
 		}
 		
+		return false;
+	}
+	
+	private boolean canBeCheckmated(Piece piece, int[] location) {
+		
+		int[] ogOgLocation = {piece.getRow(), piece.getColumn()};
+		piece.setLocation(location);
+		
+		Piece movingPiece = null;
+		int[] ogMovingLocation = null;
+		for (Piece opponent : Game.player1Pieces) {
+			int[] ogLocation = {opponent.getRow(), opponent.getColumn()};
+			for(int[] move : opponent.getPossibleMovesInCheck()) {
+				if (Tile.isOccupied(move[0], move[1]) && Tile.getPiece(move[0], move[1]).getType() != Piece.type.KING) {
+					movingPiece = Tile.getPiece(move[0], move[1]);
+					ogMovingLocation = new int[] {movingPiece.getRow(), movingPiece.getColumn()};
+					movingPiece.setLocation(new int[] {-1, -1});
+				}
+				opponent.setLocation(move); 
+				if (canBeKilled(Piece.getKing(player))) {
+					System.out.println("got to this");
+					int moveSum	= 0;
+					for(Piece own : pieces) {
+						moveSum+=own.getPossibleMovesInCheck().size();
+						System.out.println(moveSum);
+					}
+					if (moveSum == 0) {
+						if (movingPiece != null) {
+							movingPiece.setLocation(ogMovingLocation);
+						}
+						opponent.setLocation(ogLocation);
+						System.out.println("checkmateable at [" + move[0] + "," + move[1] + "] with a " + opponent.getType());
+						piece.setLocation(ogOgLocation);
+						return true;
+					}
+					if (movingPiece != null) {
+						movingPiece.setLocation(ogMovingLocation);
+					}
+				}
+				if (movingPiece != null) {
+					movingPiece.setLocation(ogMovingLocation);
+				}
+			}
+			opponent.setLocation(ogLocation);
+		}
+		
+		piece.setLocation(ogOgLocation);
 		return false;
 	}
 	
