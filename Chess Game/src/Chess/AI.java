@@ -926,7 +926,7 @@ public class AI implements Runnable{
 							if (!canBeCheckmated(pieceToSaveCheckmate, placeToMoveForSaveCheckmate)) {
 								pieceToMove= pieceToSaveCheckmate;
 								randomLocation = placeToMoveForSaveCheckmate;
-							//	return;
+								return;
 							}
 						}
 					}
@@ -968,6 +968,7 @@ public class AI implements Runnable{
 				System.out.println("SAVINGGG a " + piece.getType());				
 //--------------------------------------------------------------------------------------------------------------------------
 				//SAVE BY MOVING PIECE
+				int[] moveLocationSaveKill = null, moveLocationAllSafe = null;
 				if (pieceToMoveForSave == null) {
 					int highestCaptureWithSaveValue = 0;
 					System.out.println("save with 1 piece");
@@ -975,18 +976,25 @@ public class AI implements Runnable{
 						if (isSafe(piece, possibleMoveLocation)) {
 							if(Tile.isOccupiedByOpponent(possibleMoveLocation[0], possibleMoveLocation[1], player) && Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue() > highestCaptureWithSaveValue) {
 								pieceToMoveForSave = piece;
-								moveLocationSave = possibleMoveLocation;
+								moveLocationSaveKill = possibleMoveLocation;
 								highestSaveValue = piece.getPieceValue();
 								highestCaptureWithSaveValue = Tile.getPiece(possibleMoveLocation[0], possibleMoveLocation[1]).getPieceValue();
 								
-							}else if(highestCaptureWithSaveValue == 0 && allPiecesSafe(piece, possibleMoveLocation)){
+							}
+							
+							if(allPiecesSafe(piece, possibleMoveLocation)){
 							
 							pieceToMoveForSave = piece;
-							moveLocationSave = possibleMoveLocation;
+							moveLocationAllSafe = possibleMoveLocation;
 							highestSaveValue = piece.getPieceValue();
 						
 							}
 						}
+					if (moveLocationSaveKill != null) {
+						moveLocationSave = moveLocationSaveKill;
+					}else if(moveLocationAllSafe != null) {
+						moveLocationSave = moveLocationAllSafe;
+					}
 			}
 //------------------------------------------------------------------------------------------------------------------------------------
 				//SAVING WITH OTHER PIECES
@@ -1285,14 +1293,16 @@ public class AI implements Runnable{
 		for(Piece piece : pieces) {
 			for(int[] move : piece.getPossibleMovesInCheck()) {
 				int[] ogLocation = {piece.getRow(), piece.getColumn()};
-				piece.setLocation(move);
 				for(Piece opponent : Game.player1Pieces) {
-					if(opponent.getType() != Piece.type.PAWN && canOpponentBeKilled(opponent) && allPiecesSafe() && opponent.getPieceValue() > mostAggressiveMoveValue) {
-						mostAggressiveMoveValue = opponent.getPieceValue();
-						mostAggressiveMoveLocation = move;
-						aggressiveMove.clear();
-						aggressiveMove.add(0, (T) piece);
-						aggressiveMove.add(1, (T) mostAggressiveMoveLocation);
+					if(opponent.getType() != Piece.type.PAWN && isSafe(opponent)) {
+						piece.setLocation(move);
+						if(canOpponentBeKilled(opponent) && allPiecesSafe() && opponent.getPieceValue() > mostAggressiveMoveValue && piece.getPieceValue() < opponent.getPieceValue()) {
+							mostAggressiveMoveValue = opponent.getPieceValue();
+							mostAggressiveMoveLocation = move;
+							aggressiveMove.clear();
+							aggressiveMove.add(0, (T) piece);
+							aggressiveMove.add(1, (T) mostAggressiveMoveLocation);
+						}
 					}	
 				}
 				piece.setLocation(ogLocation);
