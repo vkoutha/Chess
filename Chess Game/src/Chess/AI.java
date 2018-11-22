@@ -12,14 +12,14 @@ public class AI implements Runnable{
 	
 	Piece pieceToMove = null;
 	int[] randomLocation = null;
-	int randomIndexPiece, randomIndexMove;
+	int randomIndexPiece, randomIndexMove, checkCount = 0;
 	boolean inMove = false;
 	
 	public AI(){
 				
 		player = GameData.player.PLAYER_2;
 		pieces = Game.player2Pieces;
-
+		
 		random = new Random();
 	}
 	
@@ -911,8 +911,8 @@ public class AI implements Runnable{
 				int[] ogLocation = {own.getRow(), own.getColumn()};
 				if(own.getPossibleMovesInCheck().size() > 0 && own.getPieceValue() < lowestPieceValue) {
 					for(int[] ownMove : own.getPossibleMovesInCheck()) {
-						own.setLocation(ownMove);
-						if (!canBeCheckmated()) {
+					//	own.setLocation(ownMove);
+						if (!canBeCheckmated(own, ownMove)) {
 							lowestPieceValue = own.getPieceValue();
 							pieceToSaveCheckmate = own;
 							placeToMoveForSaveCheckmate = ownMove;
@@ -922,7 +922,7 @@ public class AI implements Runnable{
 								randomLocation = placeToMoveForSaveCheckmate;
 								own.setLocation(ogLocation);
 							}*/
-							own.setLocation(ogLocation);
+						//	own.setLocation(ogLocation);
 							if (!canBeCheckmated(pieceToSaveCheckmate, placeToMoveForSaveCheckmate)) {
 								pieceToMove= pieceToSaveCheckmate;
 								randomLocation = placeToMoveForSaveCheckmate;
@@ -967,10 +967,28 @@ public class AI implements Runnable{
 				
 				System.out.println("SAVINGGG a " + piece.getType());				
 //--------------------------------------------------------------------------------------------------------------------------
+				int highestCaptureWithSaveValue = 0;
+				for(Piece ownPiece : pieces) {
+					if (ownPiece.getPieceValue() < lowestSacrificeValue) {
+						ogPieceLocation = new int[] {ownPiece.getRow(), ownPiece.getColumn()};
+						for(int[] location : ownPiece.getPossibleMovesInCheck()) {
+						//	ownPiece.setLocation(location);
+							if (isSafe(piece) && (ownPiece.getType() == Piece.type.PAWN || isSafe(ownPiece, location))){
+								if (Tile.isOccupiedByOpponent(location[0], location[1], player) && Tile.getPiece(location[0], location[1]).getPieceValue() > highestCaptureWithSaveValue) {
+									pieceToMoveForSave = piece;
+									moveLocationSave = location;
+									highestSaveValue = piece.getPieceValue();
+									System.out.println("gunna kill something");
+									highestCaptureWithSaveValue = Tile.getPiece(location[0], location[1]).getPieceValue();
+								}
+							}
+						}
+					}
+				}
 				//SAVE BY MOVING PIECE
 				int[] moveLocationSaveKill = null, moveLocationAllSafe = null;
 				if (pieceToMoveForSave == null) {
-					int highestCaptureWithSaveValue = 0;
+					highestCaptureWithSaveValue = 0;
 					System.out.println("save with 1 piece");
 					for(int[] possibleMoveLocation : piece.getPossibleMovesInCheck())
 						if (isSafe(piece, possibleMoveLocation)) {
@@ -998,7 +1016,7 @@ public class AI implements Runnable{
 			}
 //------------------------------------------------------------------------------------------------------------------------------------
 				//SAVING WITH OTHER PIECES
-				int highestCaptureWithSaveValue = 0;
+				highestCaptureWithSaveValue = 0;
 				lowestSacrificeValue = 11110;
 				if (pieceToMoveForSave == null) {
 					System.out.println("saving with other pieces");
@@ -1066,7 +1084,7 @@ public class AI implements Runnable{
 			int piecesWithSafeCheckMovesSize = piecesWithSafeCheckMoves.size(), mostAggressiveMoveSize = -1,
 					piecesWithSafeMovesSize = -1, piecesWithNoKillSize = -1;
 			
-			if (piecesWithSafeCheckMovesSize == 0) {
+			if (piecesWithSafeCheckMovesSize == 0 || checkCount > 4) {
 				mostAggressiveMove = mostAggressiveMove();
 				mostAggressiveMoveSize = mostAggressiveMove.size();
 			}
@@ -1084,7 +1102,7 @@ public class AI implements Runnable{
 			ArrayList<int[]> safeCheckMoves, safeMoves, nonKillableMoves;
 			
 		
-			if (piecesWithSafeCheckMovesSize > 0) {
+			if (piecesWithSafeCheckMovesSize > 0 && checkCount <= 4) {
 			
 				System.out.println("CHECK MOVE");
 				//PICKS A RANDOM NUMBER BASED ON ARRAYLIST SIZE OF PIECES
@@ -1097,6 +1115,7 @@ public class AI implements Runnable{
 				System.out.println("Amount of moves piece can make to check: " + safeCheckMoves.size());
 				randomIndexMove = randomMoveIndex(safeCheckMoves);
 				randomLocation = safeCheckMoves.get(randomIndexMove);
+				checkCount++;
 				
 			}else if(mostAggressiveMoveSize > 0) {
 				
