@@ -35,7 +35,7 @@ public class Minimax {
 		int[] locationToMove = null;
 		ArrayList<Node> initialLayer = new ArrayList<Node>();
 		pieces.forEach(piece -> {
-			piece.getPossibleMovesInCheck().forEach(move -> {initialLayer.add(new Node(true, 1, piece, move, getBoardValue(piece, move)));});
+			piece.getPossibleMovesInCheck().forEach(move -> {initialLayer.add(new Node(null, 1, piece, move, getBoardValue(piece, move)));});
 		});
 		System.out.println(initialLayer.size());
 		int minimizedScore = 5000;
