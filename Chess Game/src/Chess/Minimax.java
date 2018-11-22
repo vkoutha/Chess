@@ -37,17 +37,12 @@ public class Minimax {
 		pieces.forEach(piece -> {
 			piece.getPossibleMovesInCheck().forEach(move -> {initialLayer.add(new Node(null, 1, piece, move, getBoardValue(piece, move)));});
 		});
-		System.out.println(initialLayer.size());
-		int minimizedScore = 5000;
-		for(Node n : initialLayer) {
-			System.out.println("Piece: " + n.getPiece().getType() + "\tMove: [" + n.getMove()[0] + "," + n.getMove()[1] + "]\tValue: " + n.getValue());
-			if(n.getValue() < minimizedScore) {
-				pieceToMove = n.getPiece();
-				locationToMove = n.getMove();
-				minimizedScore = n.getValue();
-			//	System.out.println("Lowest score is: " + minimizedScore);
-			}
-		}
+	
+		
+		
+		
+		
+		
 	//	reset(ogPieceLocations, ogOpponentPieceLocations);
 		Game.prevTileClicked = new int[] {pieceToMove.getRow(), pieceToMove.getColumn()};
 		Game.tileClicked = locationToMove;
