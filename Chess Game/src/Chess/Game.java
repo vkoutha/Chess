@@ -63,7 +63,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	boolean sizeInitialized = false, loadScreenCreated = false, secondaryScreenCreated = false;
 	
 	AI bot;
-	Minimax ultraBot;
+	static Minimax ultraBot;
 	DecimalFormat formatter;
 	
 	/**
@@ -150,7 +150,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 //---------------------------------------------------------------------------------------------------------------------------------------
 	
 		bot = new AI();
-		ultraBot = new Minimax(GameData.player.PLAYER_2);
+		ultraBot = new Minimax(GameData.player.PLAYER_2, GameData.AI_LEVEL);
 		storeBoardData();
 		
 	}
@@ -321,7 +321,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			else
 				;
 		else if(!inPromotionMenu) {			
-				ultraBot.move(69);
+				ultraBot.move();
 			//	bot.randomMove();
 		}	
 		
