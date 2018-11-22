@@ -321,7 +321,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			else
 				;
 		else if(!inPromotionMenu) {			
-			//	ultraBot.oneMoveAhead();
+				ultraBot.move(69);
 			//	bot.randomMove();
 		}	
 		
