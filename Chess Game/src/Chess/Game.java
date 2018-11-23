@@ -175,7 +175,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			g.setFont(new Font("Snap ITC", Font.PLAIN, 40));
 			g.drawString("Press C to Create a New Game", GameData.WIDTH/2-350, (frame.getHeight()/2)-35);
 			g.drawString("Press L to Load a Previous Game",  GameData.WIDTH/2-375, (frame.getHeight()/2)+25);
-			
 			g.drawImage(new ImageIcon("queen.png").getImage(), GameData.WIDTH/2, 200, null);
 			break;
 						
