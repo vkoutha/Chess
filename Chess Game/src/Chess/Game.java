@@ -690,7 +690,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				
 				if(!inPromotionMenu)
 					if (GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1)
-						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_WIDTH)};
+						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR-10)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR+2))/GameData.TILE_WIDTH)};
 					else if (!GameData.singlePlayer && playerTurn == GameData.player.PLAYER_2) 
 						tileClicked = new int[]{(int) (GameData.ROWS-1-(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_WIDTH))), (int)(GameData.ROWS-1-(Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_HEIGHT)))};
 			}
