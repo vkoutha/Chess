@@ -267,7 +267,7 @@ public class Rook implements Piece{
 	*/
 
 		if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1)
-			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.ROOK_PIECE_IMAGE_PLAYER_1 : GameData.ROOK_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH)-15, (row*GameData.TILE_HEIGHT)-5, null);
+			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.ROOK_PIECE_IMAGE_PLAYER_1 : GameData.ROOK_PIECE_IMAGE_PLAYER_2, (int) (column == 0 ? -(GameData.TILE_WIDTH/7) : (column * (GameData.TILE_WIDTH) - (GameData.TILE_WIDTH/8))), (row*GameData.TILE_HEIGHT), null);
 		else
 			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.ROOK_PIECE_IMAGE_PLAYER_1 : GameData.ROOK_PIECE_IMAGE_PLAYER_2, ((GameData.COLUMNS-1-column) * GameData.TILE_WIDTH)-15, ((GameData.ROWS-1-row)*GameData.TILE_HEIGHT)-5, null);
 	

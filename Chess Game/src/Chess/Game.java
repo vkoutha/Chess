@@ -1,9 +1,10 @@
 package Chess;
 
 import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,24 +20,19 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.function.IntPredicate;
-import java.util.stream.IntStream;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-
-import org.omg.PortableServer.POAManagerPackage.State;
 
 public class Game implements ActionListener, MouseListener, KeyListener{
 	
@@ -65,19 +61,28 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	AI bot;
 	static Minimax ultraBot;
 	DecimalFormat formatter;
+	Dimension gameDimension;
 	
 	/**
 	 * Constructor for Game Class, creates inital game frame, renderer class, and creates game file folder if necessary
 	 */
 	public Game() {
-		
+	
+	    System.out.print(System.getProperty("ChessPieceSoundEffec.wav"));
 		Timer timer = new Timer(20, this);
 		formatter = new DecimalFormat("#####.##");
 		renderer = new Renderer();
 		frame = new JFrame("Chess");
 		
-		if (!GameData.gameFileFolder.exists()) 			
+		if (!GameData.gameFileFolder.exists()) {
+			System.out.println("exists");
+			try {
 			GameData.gameFileFolder.mkdir();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("Created");
+		}
 						
 	    frame.setIconImage(GameData.frameIcon);
 		frame.setSize(0, 0);
@@ -165,14 +170,14 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		
 		case STARTING_MENU:
 			
-			frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, 200);
+			frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-40, 200);
 			frame.setLocationRelativeTo(null);
 
 			g.setColor(GameData.MENU_COLOR);
 			g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 			
 			g.setColor(Color.BLACK);
-			g.setFont(new Font("Snap ITC", Font.PLAIN, 40));
+			g.setFont(new Font("Bell MT" , Font.BOLD, 40));
 			g.drawString("Press C to Create a New Game", GameData.WIDTH/2-350, (frame.getHeight()/2)-35);
 			g.drawString("Press L to Load a Previous Game",  GameData.WIDTH/2-375, (frame.getHeight()/2)+25);
 			g.drawImage(new ImageIcon("queen.png").getImage(), GameData.WIDTH/2, 200, null);
@@ -181,13 +186,19 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		case IN_GAME:
 					
 			if(!sizeInitialized) {
-				
-				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR-7);
+			//	frame.setResizable(true);
+				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR);
+				frame.setResizable(true);
+				Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 				frame.setLocationRelativeTo(null);
-				frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
+				frame.setLocation(screenDimension.width/2-frame.getSize().width/2, screenDimension.height/2-frame.getSize().height/2);
+				//	frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
 				sizeInitialized = true;
-				
+				gameDimension = frame.getSize();
+				updateBoardSize();
+
 			}
+			
 
 			if(secondaryScreenCreated == false) {
     			secondaryFrame = new SecondaryFrame();
@@ -201,13 +212,14 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 						if (columnNumber == 0) {
 							g.setColor(Color.BLACK);
 							g.setFont(new Font("Bookman Old Style", Font.BOLD, 18));
-							g.drawString("" + (GameData.ROWS-rowNumber), columnNumber*GameData.TILE_HEIGHT+5, rowNumber*GameData.TILE_WIDTH+18);
+							g.drawString("" + (GameData.ROWS-rowNumber), 5, (rowNumber*GameData.TILE_HEIGHT)+18);
 						}
 						
 						if (rowNumber == 7) {
 							g.setColor(Color.BLACK);
 							g.setFont(new Font("Bookman Old Style", Font.BOLD, 18));
-							g.drawString("" + (char)(97+columnNumber), columnNumber*GameData.TILE_WIDTH+95, rowNumber*GameData.TILE_HEIGHT+18);
+							System.out.println(GameData.TILE_WIDTH);
+							g.drawString("" + (char)(97+columnNumber), ((columnNumber+1)*GameData.TILE_WIDTH)-17 , (rowNumber*GameData.TILE_HEIGHT)+18);
 						}
 				}
 			
@@ -245,6 +257,12 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		if(victoryMessage != 1)
 			checkForWin();
 		
+		if (sizeInitialized && ((int)gameDimension.getWidth() != (int)frame.getWidth() || gameDimension.getHeight() != frame.getHeight())) {
+			gameDimension = frame.getSize();
+			updateBoardSize();
+		}
+		
+	//	System.out.println(frame.getSize().getWidth());
 	}
 	
 	/**
@@ -320,8 +338,8 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			else
 				;
 		else if(!inPromotionMenu) {			
-				ultraBot.move();
-			//	bot.randomMove();
+			//	ultraBot.move();
+				bot.randomMove();
 		}	
 		
 	}
@@ -344,8 +362,12 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public boolean isValidMoveClick() {
 		
+		try {
 		return tileClicked != null && board[tileClicked[0]][tileClicked[1]].isValidMove && board[prevTileClicked[0]][prevTileClicked[1]].isSelected;
-		
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 		
 	/**
@@ -354,11 +376,15 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public boolean isInvalidValidClick() {
 		
-		if(playerTurn == GameData.player.PLAYER_1)
-			return tileClicked != null && !Tile.isOccupiedByPlayer1(tileClicked[0], tileClicked[1]) && !board[tileClicked[0]][tileClicked[1]].isValidMove;
-		else
-			return tileClicked != null && !Tile.isOccupiedByPlayer2(tileClicked[0], tileClicked[1]) && !board[tileClicked[0]][tileClicked[1]].isValidMove;
-		
+		try {
+			if(playerTurn == GameData.player.PLAYER_1)
+				return tileClicked != null && !Tile.isOccupiedByPlayer1(tileClicked[0], tileClicked[1]) && !board[tileClicked[0]][tileClicked[1]].isValidMove;
+			else
+				return tileClicked != null && !Tile.isOccupiedByPlayer2(tileClicked[0], tileClicked[1]) && !board[tileClicked[0]][tileClicked[1]].isValidMove;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return true;
+		}
 	}
 	
 	/**
@@ -395,7 +421,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		board[prevTileClicked[0]][prevTileClicked[1]].setAsTileMovedTo(true);
 
 		storeBoardData();	
-		playPieceSoundEffect();	
+		Game.game.playPieceSoundEffect();	
 		showCheckMoves();
 		resetTileClick();
 		switchPlayerTurn();
@@ -437,7 +463,35 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		}
 		
 	}
+	
+	private void updateBoardSize() {
 		
+		GameData.WIDTH = frame.getWidth();
+		GameData.HEIGHT = frame.getHeight();
+		GameData.TILE_WIDTH = ((GameData.WIDTH-GameData.WIDTH_COMPENSATOR-14)/GameData.COLUMNS);
+		GameData.TILE_HEIGHT = (GameData.HEIGHT-GameData.HEIGHT_COMPENSATOR-15)/GameData.ROWS;
+		
+		GameData.KING_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(GameData.TILE_WIDTH-(GameData.TILE_WIDTH/100), GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		GameData.KING_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(GameData.TILE_WIDTH-(GameData.TILE_WIDTH/100), GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		
+		GameData.QUEEN_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(336, 0, 307, 336).getScaledInstance(GameData.TILE_WIDTH-8, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		GameData.QUEEN_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(336, 331, 307, 336).getScaledInstance(GameData.TILE_WIDTH-8, GameData.TILE_HEIGHT-5, Image.SCALE_SMOOTH);
+		
+		GameData.BISHOP_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(672, 0, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		GameData.BISHOP_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(672, 331, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		
+		GameData.KNIGHT_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(1008, 0, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		GameData.KNIGHT_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(1008, 331, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		
+		GameData.ROOK_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(1300, 0, 305, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		GameData.ROOK_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(1300, 331, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+
+		GameData.PAWN_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(1650, 0, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		GameData.PAWN_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(1650, 331, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
+		
+		
+	}
+			
 	/**
 	 * Combines player1Pieces and player2Pieces Arraylist into one and then stores it in an Arraylist of Arraylists of Pieces. In case of undoing a move,
 	 * player1Pieces and player2Pieces have their corresponding pieces added to them from a previous index in the Arraylist of Arraylists of Pieces.
@@ -460,12 +514,15 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	/**
 	 * Plays a moving-piece sound effect
 	 */
-	public static void playPieceSoundEffect() {
+	public void playPieceSoundEffect() {
 		
+
 		try {
 			 
-		 	AudioInputStream audio = AudioSystem.getAudioInputStream(new File("C:\\Users\\Public\\Documents\\Chess Game\\ChessPieceSoundEffect.wav"));
-	        Clip clip = AudioSystem.getClip();  
+			InputStream pieceAudioStream = this.getClass().getResourceAsStream("ChessPieceSoundEffect.wav");
+
+		 	AudioInputStream audio = AudioSystem.getAudioInputStream(pieceAudioStream);
+		 	Clip clip = AudioSystem.getClip();  
 	        clip.open(audio);
 	        clip.start();
 
@@ -624,17 +681,25 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stubs           
 		
-		if(gameState == GameData.gameState.IN_GAME) {
+		try {
 			
-			if(tileClicked != null)
-				prevTileClicked = tileClicked;
+			if(gameState == GameData.gameState.IN_GAME) {
+				
+				if(tileClicked != null)
+					prevTileClicked = tileClicked;
+				
+				if(!inPromotionMenu)
+					if (GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1)
+						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_WIDTH)};
+					else if (!GameData.singlePlayer && playerTurn == GameData.player.PLAYER_2) 
+						tileClicked = new int[]{(int) (GameData.ROWS-1-(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_WIDTH))), (int)(GameData.ROWS-1-(Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_HEIGHT)))};
+			}
 			
-			if(!inPromotionMenu)
-				if (GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1)
-					tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_WIDTH)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_HEIGHT)};
-				else if (!GameData.singlePlayer && playerTurn == GameData.player.PLAYER_2) 
-					tileClicked = new int[]{(int) (GameData.ROWS-1-(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_WIDTH))), (int)(GameData.ROWS-1-(Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_HEIGHT)))};
-		
+		}catch(Exception ex) {
+		//	ex.printStackTrace();
+			System.out.println("Tile clicked: " + tileClicked[0] + "," + tileClicked[1]);
+			tileClicked = null;
+			prevTileClicked = null;
 		}
 	}
 

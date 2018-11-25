@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -23,10 +26,10 @@ public class GameData{
 	
 //-----------------------------------------------------------------
 
-	public static final int WIDTH = 900;
+	public static int WIDTH = 900;
 	public static final int WIDTH_COMPENSATOR = 5;
 	
-	public static final int HEIGHT = 900;
+	public static int HEIGHT = 900;
 	public static final int HEIGHT_COMPENSATOR = 35;
 	
 	public static final int PROMOTION_WINDOW_WIDTH = 700;
@@ -35,8 +38,8 @@ public class GameData{
 	public static final int ROWS = 8;
 	public static final int COLUMNS = 8;
 	
-	public static final int TILE_WIDTH = WIDTH/ROWS;
-	public static final int TILE_HEIGHT = HEIGHT/COLUMNS;
+	public static int TILE_WIDTH = WIDTH/ROWS;
+	public static int TILE_HEIGHT = HEIGHT/COLUMNS;
 	
 	public static final int PLAYER_1_STARTING_PAWN_ROW = 6;
 	public static final int PLAYER_2_STARTING_PAWN_ROW = 1;
@@ -163,27 +166,27 @@ public class GameData{
 	
 	public static BufferedImage PIECE_SPRITES;
 	
-	public static final Image KING_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(100, 115, Image.SCALE_SMOOTH);
-	public static final Image KING_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(100, 115, Image.SCALE_SMOOTH);
+	public static Image KING_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(TILE_WIDTH, TILE_HEIGHT, Image.SCALE_SMOOTH);
+	public static Image KING_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(TILE_WIDTH, TILE_HEIGHT, Image.SCALE_SMOOTH);
 	
-	public static final Image QUEEN_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(336, 0, 307, 336).getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-	public static final Image QUEEN_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(336, 331, 307, 336).getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+	public static Image QUEEN_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(336, 0, 307, 336).getScaledInstance(TILE_WIDTH-5, TILE_HEIGHT, Image.SCALE_SMOOTH);
+	public static Image QUEEN_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(336, 331, 307, 336).getScaledInstance(TILE_WIDTH-5, TILE_HEIGHT, Image.SCALE_SMOOTH);
 	
-	public static final Image BISHOP_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(672, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
-	public static final Image BISHOP_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(672, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	public static Image BISHOP_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(672, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	public static Image BISHOP_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(672, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
 	
-	public static final Image KNIGHT_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1008, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
-	public static final Image KNIGHT_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1008, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	public static Image KNIGHT_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1008, 0, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
+	public static Image KNIGHT_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1008, 331, 300, 336).getScaledInstance(100, 110, Image.SCALE_SMOOTH);
 	
-	public static final Image ROOK_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1300, 0, 305, 336).getScaledInstance(110, 120, Image.SCALE_SMOOTH);
-	public static final Image ROOK_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1300, 331, 300, 336).getScaledInstance(105, 120, Image.SCALE_SMOOTH);
+	public static Image ROOK_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1300, 0, 305, 336).getScaledInstance(110, 120, Image.SCALE_SMOOTH);
+	public static Image ROOK_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1300, 331, 300, 336).getScaledInstance(105, 120, Image.SCALE_SMOOTH);
 
-	public static final Image PAWN_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1650, 0, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
-	public static final Image PAWN_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1650, 331, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+	public static Image PAWN_PIECE_IMAGE_PLAYER_1 = PIECE_SPRITES.getSubimage(1650, 0, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+	public static Image PAWN_PIECE_IMAGE_PLAYER_2 = PIECE_SPRITES.getSubimage(1650, 331, 300, 336).getScaledInstance(120, 120, Image.SCALE_SMOOTH);
 	
 //-----------------------------------------------------------------
 
-	public static final String fileLocation = "C:\\Users\\Public\\Documents\\Chess Game\\Games";
+	public static final String fileLocation = "C:\\Users\\Public\\Documents\\Chess Game";
 //	public static final String fileLocation = "H:\\animal stuff\\Chess";
 	
 	public static final File gameFileFolder = new File(fileLocation);
@@ -199,42 +202,33 @@ public class GameData{
 	
 	public static final Image frameIcon = new ImageIcon(new ImageIcon(GameData.class.getResource("gameIcon.png")).getImage().getScaledInstance(180, 190, Image.SCALE_DEFAULT)).getImage();
 
-//-----------------------------------------------------------------
+//-------------------------------------------------------------------
+	
 	public enum player{
-		
 		PLAYER_1, 
 		PLAYER_2;
-		
 	}
 	
 	public enum gameState{
-		
 		STARTING_MENU,
 		IN_GAME,
 		PAUSED;
-		
-	}
+	}	
 	
 //-----------------------------------------------------------------
 
 	
 	public static int[] getTileCenter(int row, int column) {
-		
 		//RETURNS coordinate [x, y] 
 		return new int[] {(column * TILE_WIDTH) + (GameData.TILE_WIDTH/2), (row * TILE_HEIGHT) + (GameData.TILE_HEIGHT/2)};
-		
 	}
 	
 	public static int getShapeStartingX(int column, int width){
-		
 		return column*GameData.TILE_WIDTH+(GameData.TILE_WIDTH-width)/2;
-		
 	}
 	
 	public static int getShapeStartingY(int row, int height){
-		
 		return row*GameData.TILE_WIDTH + (GameData.TILE_WIDTH-height)/2;
-		
 	}
 	
 }
