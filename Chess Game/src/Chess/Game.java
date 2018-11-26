@@ -465,10 +465,10 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	
 	private void updateBoardSize() {
 		
-		GameData.WIDTH = frame.getWidth();
-		GameData.HEIGHT = frame.getHeight();
-		GameData.TILE_WIDTH = ((GameData.WIDTH-GameData.WIDTH_COMPENSATOR-14)/GameData.COLUMNS);
-		GameData.TILE_HEIGHT = (GameData.HEIGHT-GameData.HEIGHT_COMPENSATOR-15)/GameData.ROWS;
+		GameData.WIDTH = frame.getWidth()-GameData.WIDTH_COMPENSATOR;
+		GameData.HEIGHT = frame.getHeight()-GameData.HEIGHT_COMPENSATOR;
+		GameData.TILE_WIDTH = ((GameData.WIDTH)/GameData.COLUMNS);
+		GameData.TILE_HEIGHT = (GameData.HEIGHT)/GameData.ROWS;
 		
 		GameData.KING_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(GameData.TILE_WIDTH-(GameData.TILE_WIDTH/100), GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
 		GameData.KING_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(GameData.TILE_WIDTH-(GameData.TILE_WIDTH/100), GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
