@@ -218,7 +218,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 						if (rowNumber == 7) {
 							g.setColor(Color.BLACK);
 							g.setFont(new Font("Bookman Old Style", Font.BOLD, 18));
-							System.out.println(GameData.TILE_WIDTH);
 							g.drawString("" + (char)(97+columnNumber), ((columnNumber+1)*GameData.TILE_WIDTH)-17 , (rowNumber*GameData.TILE_HEIGHT)+18);
 						}
 				}
