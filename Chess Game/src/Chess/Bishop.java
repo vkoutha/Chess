@@ -204,7 +204,6 @@ public class Bishop implements Piece{
 		tileCenterX = GameData.getTileCenter(row, column)[0];
 		tileCenterY = GameData.getTileCenter(row, column)[1];
 		
-		
 	}
 	
 	@Override

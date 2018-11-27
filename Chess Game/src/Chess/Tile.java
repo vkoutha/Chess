@@ -2,6 +2,7 @@ package Chess;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class Tile {
 
@@ -127,6 +128,58 @@ public class Tile {
 		
 		return false;
 		
+	}
+	
+	public static boolean isOccupied(int row, int column, ArrayList<Piece> player1Pieces, ArrayList<Piece> player2Pieces) {
+		
+		for(int z = 0; z < player1Pieces.size(); z++) 
+			if(player1Pieces.get(z).getRow() == row && player1Pieces.get(z).getColumn() == column) 
+				return true;
+		
+		for(int z = 0; z < player2Pieces.size(); z++) 
+			if(player2Pieces.get(z).getRow() == row && player2Pieces.get(z).getColumn() == column) 
+				return true;
+			
+		return false;
+		
+	}
+	
+	public static boolean isOccupiedByOwn(int row, int column, GameData.player player, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
+	
+		switch(player) {
+		
+		case PLAYER_1:
+			for(int z = 0; z < playerPieces.size(); z++)
+				if(playerPieces.get(z).getRow() == row && playerPieces.get(z).getColumn() == column) 
+					return true;
+			break;
+			
+		case PLAYER_2:
+			for(int z = 0; z < botPieces.size(); z++) 				
+				if(botPieces.get(z).getRow() == row && botPieces.get(z).getColumn() == column) 
+					return true;
+			break;	
+		}
+		return false;	
+	}
+	
+	public static boolean isOccupiedByOpponent(int row, int column, GameData.player player, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
+		
+		switch(player) {
+		
+		case PLAYER_1:	
+			for(int z = 0; z < botPieces.size(); z++) 
+				if(botPieces.get(z).getRow() == row && botPieces.get(z).getColumn() == column) 
+					return true;
+			break;
+		
+		case PLAYER_2:
+			for(int z = 0; z < playerPieces.size(); z++) 
+				if(playerPieces.get(z).getRow() == row && playerPieces.get(z).getColumn() == column) 
+					return true;
+			break;	
+		}
+		return false;
 	}
 	
 	public static void resetTiles(boolean resetTileThatChecked) {

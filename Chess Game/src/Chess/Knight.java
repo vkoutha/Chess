@@ -98,41 +98,40 @@ public class Knight implements Piece{
 
 		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
 		
-		if(!Tile.isOccupiedByOpponent(row, column, player)) {
+		if(Tile.isOccupiedByOpponent(row, column, player))
+			return possibleMoves;
 			
-			//ALLOWS TO MOVE 1 UP, 2 RIGHT
-			if(row-1 >= 0 && column+2 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row-1, column+2, player) || !Tile.isOccupied(row-1, column+2)))
-				possibleMoves.add(new int[] {row-1, column+2});
-			
-			//ALLOWS TO MOVE 1 UP, 2 LEFT
-			if(row-1 >= 0 && column-2 >= 0 && (Tile.isOccupiedByOpponent(row-1, column-2, player) || !Tile.isOccupied(row-1, column-2))) 
-				possibleMoves.add(new int[] {row-1, column-2});
-			
-			//ALLOWS TO MOVE 1 DOWN, 2 RIGHT
-			if(row+1 < GameData.ROWS && column+2 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row+1, column+2, player) || !Tile.isOccupied(row+1, column+2)))
-				possibleMoves.add(new int[] {row+1, column+2});
-			
-			//ALLOWS TO MOVE 1 DOWN, 2 LEFT
-			if(row+1 < GameData.ROWS && column-2 >= 0 && (Tile.isOccupiedByOpponent(row+1, column-2, player) || !Tile.isOccupied(row+1, column-2)))
-				possibleMoves.add(new int[] {row+1, column-2});
-			
-			//ALLOWS TO MOVE 2 UP, 1 RIGHT
-			if(row-2 >= 0 && column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row-2, column+1, player) || !Tile.isOccupied(row-2, column+1)))
-				possibleMoves.add(new int[] {row-2, column+1});
-			
-			//ALLOWS TO MOVE 2 UP, 1 LEFT
-			if(row-2 >= 0 && column-1 >= 0 && (Tile.isOccupiedByOpponent(row-2, column-1, player) || !Tile.isOccupied(row-2, column-1)))
-				possibleMoves.add(new int[] {row-2, column-1});
-			
-			//ALLOWS TO MOVE 2 DOWN, 1 RIGHT
-			if(row+2 < GameData.ROWS && column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row+2, column+1, player) || !Tile.isOccupied(row+2, column+1)))
-				possibleMoves.add(new int[] {row+2, column+1});
-			
-			//ALLOWS TO MOVE 2 DOWN, 1 LEFT
-			if(row+2 < GameData.ROWS && column-1 >= 0 && (Tile.isOccupiedByOpponent(row+2, column-1, player) || !Tile.isOccupied(row+2, column-1)))
-				possibleMoves.add(new int[] {row+2, column-1});
-			
-		}
+		//ALLOWS TO MOVE 1 UP, 2 RIGHT
+		if(row-1 >= 0 && column+2 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row-1, column+2, player) || !Tile.isOccupied(row-1, column+2)))
+			possibleMoves.add(new int[] {row-1, column+2});
+		
+		//ALLOWS TO MOVE 1 UP, 2 LEFT
+		if(row-1 >= 0 && column-2 >= 0 && (Tile.isOccupiedByOpponent(row-1, column-2, player) || !Tile.isOccupied(row-1, column-2))) 
+			possibleMoves.add(new int[] {row-1, column-2});
+		
+		//ALLOWS TO MOVE 1 DOWN, 2 RIGHT
+		if(row+1 < GameData.ROWS && column+2 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row+1, column+2, player) || !Tile.isOccupied(row+1, column+2)))
+			possibleMoves.add(new int[] {row+1, column+2});
+		
+		//ALLOWS TO MOVE 1 DOWN, 2 LEFT
+		if(row+1 < GameData.ROWS && column-2 >= 0 && (Tile.isOccupiedByOpponent(row+1, column-2, player) || !Tile.isOccupied(row+1, column-2)))
+			possibleMoves.add(new int[] {row+1, column-2});
+		
+		//ALLOWS TO MOVE 2 UP, 1 RIGHT
+		if(row-2 >= 0 && column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row-2, column+1, player) || !Tile.isOccupied(row-2, column+1)))
+			possibleMoves.add(new int[] {row-2, column+1});
+		
+		//ALLOWS TO MOVE 2 UP, 1 LEFT
+		if(row-2 >= 0 && column-1 >= 0 && (Tile.isOccupiedByOpponent(row-2, column-1, player) || !Tile.isOccupied(row-2, column-1)))
+			possibleMoves.add(new int[] {row-2, column-1});
+		
+		//ALLOWS TO MOVE 2 DOWN, 1 RIGHT
+		if(row+2 < GameData.ROWS && column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row+2, column+1, player) || !Tile.isOccupied(row+2, column+1)))
+			possibleMoves.add(new int[] {row+2, column+1});
+		
+		//ALLOWS TO MOVE 2 DOWN, 1 LEFT
+		if(row+2 < GameData.ROWS && column-1 >= 0 && (Tile.isOccupiedByOpponent(row+2, column-1, player) || !Tile.isOccupied(row+2, column-1)))
+			possibleMoves.add(new int[] {row+2, column-1});
 		
 		return possibleMoves;
 	}
@@ -159,6 +158,7 @@ public class Knight implements Piece{
 		return possibleMoves;
 		
 	}
+	
 	
 	@Override
 	public void showValidMoves() {

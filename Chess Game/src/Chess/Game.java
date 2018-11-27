@@ -68,7 +68,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public Game() {
 	
-	    System.out.print(System.getProperty("ChessPieceSoundEffec.wav"));
 		Timer timer = new Timer(20, this);
 		formatter = new DecimalFormat("#####.##");
 		renderer = new Renderer();

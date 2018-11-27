@@ -156,7 +156,7 @@ public class Rook implements Piece{
 			
 			return possibleMoves;
 			
-		}
+	}
 		
 	public ArrayList<int[]> getPossibleMovesInCheck(){
 			

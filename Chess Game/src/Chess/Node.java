@@ -1,5 +1,7 @@
 package Chess;
 
+import java.util.ArrayList;
+
 public class Node {
 
 	private Node parent;
@@ -8,7 +10,7 @@ public class Node {
 	private int[] move;
 	private int layer, value;
 	
-	public Node(Node parent, int layer, Piece piece, int[] move, int value) {
+	public Node(Node parent, int layer, Piece piece, int[] move, int value, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
 		this.parent = parent;
 		this.layer = layer;
 		this.piece = piece;
@@ -17,21 +19,21 @@ public class Node {
 		if (layer < Game.ultraBot.movesAhead-1) {
 			int totalChildren = 0;
 			if (piece.getPlayer() == GameData.player.PLAYER_1) {
-				for(Piece pieces : Game.ultraBot.botPieces) 
+				for(Piece pieces : botPieces) 
 					totalChildren += pieces.getPossibleMovesInCheck().size();
 				children = new Node[totalChildren];
 				int index = 0;
-				for(Piece p : Game.ultraBot.botPieces)
+				for(Piece p : botPieces)
 					for(int[] m : p.getPossibleMovesInCheck()) 
-						children[index++] = new Node(this, layer+1, p, m, Game.ultraBot.getBoardValue(p, m));
+						children[index++] = new Node(this, layer+1, p, m, Minimax.getBoardValue(p, m, botPieces, playerPieces), Minimax.deepClone(botPieces), Minimax.deepClone(playerPieces));
 			}else{
-				for(Piece pieces : Game.ultraBot.playerPieces) 
+				for(Piece pieces : playerPieces) 
 					totalChildren += pieces.getPossibleMovesInCheck().size();
 				children = new Node[totalChildren];
 				int index = 0;
-				for(Piece p : Game.ultraBot.playerPieces)
+				for(Piece p : playerPieces)
 					for(int[] m : p.getPossibleMovesInCheck()) 
-						children[index++] = new Node(this, layer+1, p, m, Game.ultraBot.getBoardValue(p, m));
+						children[index++] = new Node(this, layer+1, p, m, Minimax.getBoardValue(p, m, botPieces, playerPieces), Minimax.deepClone(botPieces), Minimax.deepClone(playerPieces));
 			}
 		}
 	}
@@ -43,7 +45,9 @@ public class Node {
 	public int[] getMove() {return move;}
 	
 	public int getValue() {return value;}
-	
+
+	public Node[] getChildren() {return children;}
+
 	public Node getRoot() {
 		if(layer == 1)
 			return this;
@@ -52,7 +56,5 @@ public class Node {
 			highest = highest.getParent();
 		return highest;
 	}
-
-	public Node[] getChildren() {return children;}
 
 }
