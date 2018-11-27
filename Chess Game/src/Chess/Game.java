@@ -187,14 +187,17 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 					
 			if(!sizeInitialized) {
 			//	frame.setResizable(true);
-				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR);
+				frame.setPreferredSize(new Dimension(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR));
+				frame.pack();
+//				frame.setSize(GameData.WIDTH + GameData.WIDTH_COMPENSATOR-5, GameData.HEIGHT+GameData.HEIGHT_COMPENSATOR);
 				frame.setResizable(true);
 				Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 				frame.setLocationRelativeTo(null);
 				frame.setLocation(screenDimension.width/2-frame.getSize().width/2, screenDimension.height/2-frame.getSize().height/2);
-				//	frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
+				//frame.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/5+90, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/4-220);
 				sizeInitialized = true;
 				gameDimension = frame.getSize();
+			//	frame.pack();
 				updateBoardSize();
 
 			}
@@ -257,8 +260,20 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			checkForWin();
 		
 		if (sizeInitialized && ((int)gameDimension.getWidth() != (int)frame.getWidth() || gameDimension.getHeight() != frame.getHeight())) {
-			gameDimension = frame.getSize();
-			updateBoardSize();
+			if (frame.getPreferredSize().getHeight() < 10) {
+				frame.setPreferredSize(new Dimension(frame.getWidth(), 10));
+				frame.pack();
+			}else {
+				try {
+				gameDimension = frame.getSize();
+				updateBoardSize();
+				}catch(Exception e) {
+					System.out.println("CRASHIN");
+					frame.setPreferredSize(new Dimension(800, 800));
+					frame.pack();
+					Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+					frame.setLocation(screenDimension.width/2-frame.getSize().width/2, screenDimension.height/2-frame.getSize().height/2);				}
+			}
 		}
 		
 	//	System.out.println(frame.getSize().getWidth());
@@ -465,10 +480,10 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	
 	private void updateBoardSize() {
 		
-		GameData.WIDTH = frame.getWidth()-GameData.WIDTH_COMPENSATOR;
-		GameData.HEIGHT = frame.getHeight()-GameData.HEIGHT_COMPENSATOR;
-		GameData.TILE_WIDTH = ((GameData.WIDTH)/GameData.COLUMNS);
-		GameData.TILE_HEIGHT = (GameData.HEIGHT)/GameData.ROWS;
+		GameData.WIDTH = frame.getWidth();
+		GameData.HEIGHT = frame.getHeight();
+		GameData.TILE_WIDTH = ((GameData.WIDTH-GameData.WIDTH_COMPENSATOR-14)/GameData.COLUMNS);
+		GameData.TILE_HEIGHT = (GameData.HEIGHT-GameData.HEIGHT_COMPENSATOR-15)/GameData.ROWS;
 		
 		GameData.KING_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(0, 0, 305, 336).getScaledInstance(GameData.TILE_WIDTH-(GameData.TILE_WIDTH/100), GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
 		GameData.KING_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(0, 331, 305, 336).getScaledInstance(GameData.TILE_WIDTH-(GameData.TILE_WIDTH/100), GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
@@ -487,8 +502,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 
 		GameData.PAWN_PIECE_IMAGE_PLAYER_1 = GameData.PIECE_SPRITES.getSubimage(1650, 0, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
 		GameData.PAWN_PIECE_IMAGE_PLAYER_2 = GameData.PIECE_SPRITES.getSubimage(1650, 331, 300, 336).getScaledInstance(GameData.TILE_WIDTH, GameData.TILE_HEIGHT, Image.SCALE_SMOOTH);
-		
-		
+				
 	}
 			
 	/**
@@ -689,7 +703,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				
 				if(!inPromotionMenu)
 					if (GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1)
-						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR+2))/GameData.TILE_WIDTH)};
+						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR-10)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR+2))/GameData.TILE_WIDTH)};
 					else if (!GameData.singlePlayer && playerTurn == GameData.player.PLAYER_2) 
 						tileClicked = new int[]{(int) (GameData.ROWS-1-(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_WIDTH))), (int)(GameData.ROWS-1-(Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_HEIGHT)))};
 			}
