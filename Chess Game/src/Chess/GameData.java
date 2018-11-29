@@ -204,6 +204,8 @@ public class GameData{
 
 //-------------------------------------------------------------------
 	
+	public static boolean switchViews = false;
+	
 	public enum player{
 		PLAYER_1, 
 		PLAYER_2;

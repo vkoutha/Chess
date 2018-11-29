@@ -243,7 +243,7 @@ public class Knight implements Piece{
 		g.fillOval(GameData.getShapeStartingX(column, GameData.KNIGHT_BASE_WIDTH), GameData.getShapeStartingY(row, GameData.KNIGHT_BASE_HEIGHT)+20, GameData.KNIGHT_BASE_WIDTH, GameData.KNIGHT_BASE_HEIGHT);
 		*/
 		
-		if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1)
+		if ((GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1) || GameData.switchViews == false)
 			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KNIGHT_PIECE_IMAGE_PLAYER_1 : GameData.KNIGHT_PIECE_IMAGE_PLAYER_2, (column * GameData.TILE_WIDTH), (row*GameData.TILE_HEIGHT), null);
 		else
 			g.drawImage(player == GameData.player.PLAYER_1 ? GameData.KNIGHT_PIECE_IMAGE_PLAYER_1 : GameData.KNIGHT_PIECE_IMAGE_PLAYER_2, ((GameData.COLUMNS-1-column) * GameData.TILE_WIDTH), ((GameData.ROWS-1-row)*GameData.TILE_HEIGHT), null);

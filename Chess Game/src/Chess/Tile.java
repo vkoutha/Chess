@@ -292,7 +292,7 @@ public class Tile {
 	public void render(Graphics g) {
 		
 		g.setColor(color);
-		if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1) 
+		if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1 || GameData.switchViews == false) 
 			g.fillRect(column * GameData.TILE_WIDTH, row * GameData.TILE_HEIGHT, GameData.TILE_WIDTH, GameData.TILE_HEIGHT);
 		else if (GameData.singlePlayer == false && Game.playerTurn == GameData.player.PLAYER_2) 
 			g.fillRect(GameData.WIDTH-GameData.WIDTH_COMPENSATOR+1-GameData.TILE_WIDTH-(column * GameData.TILE_WIDTH),GameData.HEIGHT-4-(GameData.TILE_HEIGHT)-(row * GameData.TILE_HEIGHT), GameData.TILE_WIDTH, GameData.TILE_HEIGHT);
@@ -300,7 +300,7 @@ public class Tile {
 		g.setColor(Color.white);
 		
 		if(color != GameData.TILE_COLOR_1_WHITE && color != GameData.TILE_COLOR_2_MAROON) 
-			if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1) 
+			if (GameData.singlePlayer || Game.playerTurn == GameData.player.PLAYER_1 || GameData.switchViews == false) 
 				g.drawRect((column * GameData.TILE_WIDTH)-1, (row * GameData.TILE_HEIGHT)-1, GameData.TILE_WIDTH, GameData.TILE_HEIGHT);
 			else if (GameData.singlePlayer == false && Game.playerTurn == GameData.player.PLAYER_2) 
 				g.drawRect((GameData.WIDTH-GameData.WIDTH_COMPENSATOR+1-GameData.TILE_WIDTH-(column * GameData.TILE_WIDTH)),(GameData.HEIGHT-4-(GameData.TILE_HEIGHT)-(row * GameData.TILE_HEIGHT)), GameData.TILE_WIDTH, GameData.TILE_HEIGHT);

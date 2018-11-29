@@ -274,8 +274,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 					frame.setLocation(screenDimension.width/2-frame.getSize().width/2, screenDimension.height/2-frame.getSize().height/2);				}
 			}
 		}
-		
-	//	System.out.println(frame.getSize().getWidth());
 	}
 	
 	/**
@@ -395,7 +393,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			else
 				return tileClicked != null && !Tile.isOccupiedByPlayer2(tileClicked[0], tileClicked[1]) && !board[tileClicked[0]][tileClicked[1]].isValidMove;
 		}catch (Exception e) {
-			e.printStackTrace();
+		//	e.printStackTrace();
 			return true;
 		}
 	}
@@ -701,8 +699,8 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 					prevTileClicked = tileClicked;
 				
 				if(!inPromotionMenu)
-					if (GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1)
-						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR-10)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR+2))/GameData.TILE_WIDTH)};
+					if (GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1 || GameData.switchViews == false)
+						tileClicked = new int[]{(int)(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR-10)/GameData.TILE_HEIGHT)), (int)Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR+5))/GameData.TILE_WIDTH)};
 					else if (!GameData.singlePlayer && playerTurn == GameData.player.PLAYER_2) 
 						tileClicked = new int[]{(int) (GameData.ROWS-1-(Math.floor((e.getY()-GameData.HEIGHT_COMPENSATOR+5)/GameData.TILE_WIDTH))), (int)(GameData.ROWS-1-(Math.floor((e.getX()-(GameData.WIDTH_COMPENSATOR-2))/GameData.TILE_HEIGHT)))};
 			}
