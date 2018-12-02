@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -63,6 +65,8 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	DecimalFormat formatter;
 	Dimension gameDimension;
 	
+	Clip clip;
+	
 	/**
 	 * Constructor for Game Class, creates inital game frame, renderer class, and creates game file folder if necessary
 	 */
@@ -95,6 +99,20 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		
 		start();
 		timer.start();
+		
+		playPieceSoundEffect();
+		clip.addLineListener(new LineListener() {
+
+			@Override
+			public void update(LineEvent event) {
+				// TODO Auto-generated method stub
+				if(event.getType() == event.getType().STOP) {
+					playPieceSoundEffect();
+				}
+			}
+	 		
+	 	});
+		
 		
 	}
 	
@@ -288,7 +306,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			for(int z = 0; z < Game.player1Pieces.size(); z++) 
 				moveSum += Game.player1Pieces.get(z).getPossibleMovesInCheck().size();					
 			
-			if(Piece.getKing(GameData.player.PLAYER_1).isInCheck() && moveSum == 0) 
+			if(Piece.isInCheck(GameData.player.PLAYER_1) && moveSum == 0) 
 				setWinner(GameData.player.PLAYER_2);
 			
 			moveSum = 0;
@@ -296,12 +314,12 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			for(int z = 0; z < Game.player2Pieces.size(); z++)		
 				moveSum += Game.player2Pieces.get(z).getPossibleMovesInCheck().size();					
 					
-			if(Piece.getKing(GameData.player.PLAYER_2).isInCheck() && moveSum == 0) 
+			if(Piece.isInCheck(GameData.player.PLAYER_2) && moveSum == 0) 
 				setWinner(GameData.player.PLAYER_1);
 			
-			if (Game.player1Pieces.size() == 1 && Game.player1Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.getKing(GameData.player.PLAYER_1).isInCheck() && playerTurn == GameData.player.PLAYER_1) 
+			if (Game.player1Pieces.size() == 1 && Game.player1Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.isInCheck(GameData.player.PLAYER_1) && playerTurn == GameData.player.PLAYER_1) 
 				setWinner(null);
-			else if (Game.player2Pieces.size() == 1 && Game.player2Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.getKing(GameData.player.PLAYER_2).isInCheck() && playerTurn == GameData.player.PLAYER_2)
+			else if (Game.player2Pieces.size() == 1 && Game.player2Pieces.get(0).getPossibleMovesInCheck().size() == 0 && !Piece.isInCheck(GameData.player.PLAYER_2) && playerTurn == GameData.player.PLAYER_2)
 				setWinner(null);
 			
 		}
@@ -432,7 +450,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		board[prevTileClicked[0]][prevTileClicked[1]].setAsTileMovedTo(true);
 
 		storeBoardData();	
-		Game.game.playPieceSoundEffect();	
+	//	Game.game.playPieceSoundEffect();	
 		showCheckMoves();
 		resetTileClick();
 		switchPlayerTurn();
@@ -451,7 +469,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public static void showCheckMoves() {
 		
-		if (Piece.getKing(GameData.player.PLAYER_1).isInCheck()) {
+		if (Piece.isInCheck(GameData.player.PLAYER_1)) {
 			
 			for(int z = 0; z < player2Pieces.size(); z++)
 				if(player2Pieces.get(z).isPieceThatChecked())
@@ -461,7 +479,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				if(player1Pieces.get(z).getPossibleMovesInCheck().size() != 0)
 					board[player1Pieces.get(z).getRow()][player1Pieces.get(z).getColumn()].setAsAvailableMoveInCheck(true);
 				
-		}else if(Piece.getKing(GameData.player.PLAYER_2).isInCheck()) {
+		}else if(Piece.isInCheck(GameData.player.PLAYER_2)) {
 			
 			for(int z = 0; z < player1Pieces.size(); z++) 
 				if(player1Pieces.get(z).isPieceThatChecked())
@@ -529,13 +547,15 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 
 		try {
 			 
-			InputStream pieceAudioStream = this.getClass().getResourceAsStream("ChessPieceSoundEffect.wav");
+			//InputStream pieceAudioStream = this.getClass().getResourceAsStream("ChessPieceSoundEffect.wav");
+			InputStream pieceAudioStream = this.getClass().getResourceAsStream("soviet-anthem.wav");
 
 		 	AudioInputStream audio = AudioSystem.getAudioInputStream(pieceAudioStream);
-		 	Clip clip = AudioSystem.getClip();  
+		 	
+		 	clip = AudioSystem.getClip();  
 	        clip.open(audio);
 	        clip.start();
-
+	        
 		} catch(Exception e) {
 	       
 	       e.printStackTrace();
@@ -681,7 +701,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		
 		if(gameState == GameData.gameState.IN_GAME) 
 			update();
-
+		
 	}
 	
 	@Override

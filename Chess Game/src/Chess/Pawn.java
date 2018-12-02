@@ -53,9 +53,6 @@ public class Pawn implements Piece{
 	public void increaseMoveCount() {moveCount++;}
 
 	@Override
-	public boolean isInCheck() {return false;}
-	
-	@Override
 	public type getType() {return type;}
 	
 	@Override
@@ -158,7 +155,7 @@ public class Pawn implements Piece{
 				
 			}
 			
-			if(Piece.getKing(player).isInCheck()) {
+			if(Piece.isInCheck(player)) {
 				
 				int ogRow = row, ogColumn = column;
 				for(int z = 0; z < possibleMoves.size(); z++) {
@@ -166,7 +163,7 @@ public class Pawn implements Piece{
 					row = possibleMoves.get(z)[0];
 					column = possibleMoves.get(z)[1];
 					
-					if(z >= 0 && Piece.getKing(player).isInCheck()) {
+					if(z >= 0 && Piece.isInCheck(player)) {
 						possibleMoves.remove(z);
 						z--;
 					}
@@ -235,7 +232,7 @@ public class Pawn implements Piece{
 			row = possibleMoves.get(z)[0];
 			column = possibleMoves.get(z)[1];
 			
-			if(z >= 0 && Piece.getKing(player).isInCheck()) {
+			if(z >= 0 && Piece.isInCheck(player)) {
 				possibleMoves.remove(z);
 				z--;
 			}
@@ -247,6 +244,153 @@ public class Pawn implements Piece{
 		return possibleMoves;
 		
 	}
+	
+	public ArrayList<int[]> getNormalMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+	ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+		
+		if(Tile.isOccupiedByOpponent(row, column, player, playerPieces, botPieces))
+			return possibleMoves;
+			
+			switch(player) {
+			
+			case PLAYER_1:
+				
+				//Allow Tile to move 1 up if it is not occupied
+				if(row-1 >= 0 && !Tile.isOccupied(row-1, column, playerPieces, botPieces))
+					possibleMoves.add(new int[] {row-1, column});
+				
+				//Allow pawn to move up two spaces if its first move and is not occupied
+				if(row == 6 && !Tile.isOccupied(row-1, column, playerPieces, botPieces) && !Tile.isOccupied(row-2, column, playerPieces, botPieces))
+					possibleMoves.add(new int[] {row-2, column});
+				
+				//Allows En Passant diagonal left capture
+				if(row == 3 && column > 0 && Tile.isOccupied(3, column-1, playerPieces, botPieces) && Tile.getPiece(3, column-1, playerPieces, botPieces).getType() == Piece.type.PAWN && Tile.getPiece(3, column-1, playerPieces, botPieces).getMoveCount() == 1 && Game.moveCount == Tile.getPiece(row, column-1, playerPieces, botPieces).getMoveCountAtFirstMove()+1) {
+					possibleMoves.add(new int[] {2, column-1});
+					enPassantLeft = true;
+				}else
+					enPassantLeft = false;
+				
+				//Allows En Passant diagonal right capture
+				if(row == 3 && column < GameData.COLUMNS-1 && Tile.isOccupied(3, column+1, playerPieces, botPieces) && Tile.getPiece(3, column+1, playerPieces, botPieces).getType() == Piece.type.PAWN && Tile.getPiece(3, column+1, playerPieces, botPieces).getMoveCount() == 1 && Game.moveCount == Tile.getPiece(row, column+1, playerPieces, botPieces).getMoveCountAtFirstMove()+1) {
+					possibleMoves.add(new int[] {2, column+1});
+					enPassantRight = true;
+				}else
+					enPassantRight = false;
+				
+				
+				break;
+			case PLAYER_2:
+				
+				//Allow Tile to move 1 up if it is not occupied
+				if(row+1 <= GameData.ROWS && !Tile.isOccupied(row+1, column, playerPieces, botPieces))
+					possibleMoves.add(new int[] {row+1, column});
+				
+				//Allow pawn to move up two spaces if its first move and is not occupied
+				if(row == 1 && !Tile.isOccupied(row+1, column, playerPieces, botPieces) && !Tile.isOccupied(row+2, column, playerPieces, botPieces))
+					possibleMoves.add(new int[] {row+2, column});
+				
+				//Allows En Passant diagonal left capture
+				if(row == 4 && column > 0 && Tile.isOccupied(4, column-1, playerPieces, botPieces) && Tile.getPiece(4, column-1, playerPieces, botPieces).getType() == Piece.type.PAWN && Tile.getPiece(4, column-1, playerPieces, botPieces).getMoveCount() == 1 && Game.moveCount == Tile.getPiece(row, column-1, playerPieces, botPieces).getMoveCountAtFirstMove()+1) {
+					possibleMoves.add(new int[] {5, column-1});
+					enPassantLeft = true;
+				}else
+					enPassantLeft = false;
+				
+				
+				//Allows En Passant diagonal right capture
+				if(row == 4 && column < GameData.COLUMNS-1 && Tile.isOccupied(4, column+1, playerPieces, botPieces) && Tile.getPiece(4, column+1, playerPieces, botPieces).getType() == Piece.type.PAWN && Tile.getPiece(4, column+1, playerPieces, botPieces).getMoveCount() == 1 && Game.moveCount == Tile.getPiece(row, column+1, playerPieces, botPieces).getMoveCountAtFirstMove()+1) {
+					possibleMoves.add(new int[] {5, column+1});
+					enPassantRight = true;
+				}else
+					enPassantRight = false;
+				
+				break;
+			}
+			
+			if(Piece.isInCheck(player)) {
+				int ogRow = row, ogColumn = column;
+				for(int z = 0; z < possibleMoves.size(); z++) {
+					row = possibleMoves.get(z)[0];
+					column = possibleMoves.get(z)[1];
+					if(z >= 0 && Piece.isInCheck(player)) {
+						possibleMoves.remove(z);
+						z--;
+					}
+				}
+				row = ogRow;
+				column = ogColumn;
+			}
+			
+			
+			return possibleMoves;	
+		
+	}
+	
+	public ArrayList<int[]> getAllMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+		
+		if(Tile.isOccupiedByOpponent(row, column, player, playerPieces, botPieces))
+			return possibleMoves;
+			
+			switch(player) {
+			
+			case PLAYER_1:
+				
+				//Allow pawn to capture/move to diagonal right if possessed by opponent
+				if(row-1 >= 0 && column+1 < GameData.COLUMNS && Tile.isOccupiedByOpponent(row-1, column+1, player, playerPieces, botPieces))
+					possibleMoves.add(new int[] {row-1, column+1});
+	
+				//Allow pawn to capture/move to diagonal left if possessed by opponent	
+				if(row-1 >= 0 && column-1 >= 0 && Tile.isOccupiedByOpponent(row-1, column-1, player, playerPieces, botPieces)) 
+					possibleMoves.add(new int[] {row-1, column-1});
+				
+				break;
+				
+			case PLAYER_2:
+			
+				//Allow pawn to capture/move to diagonal right if possessed by opponent
+				if(row+1 < GameData.ROWS && column+1 < GameData.COLUMNS && Tile.isOccupiedByOpponent(row+1, column+1, player, playerPieces, botPieces)) 
+					possibleMoves.add(new int[] {row+1, column+1});
+				
+				//Allow pawn to capture/move to diagonal left if possessed by opponent
+				if(row+1 < GameData.ROWS && column-1 >= 0 && Tile.isOccupiedByOpponent(row+1, column-1, player, playerPieces, botPieces)) 
+					possibleMoves.add(new int[] {row+1, column-1});
+				
+				break;
+				
+			}
+			
+			return possibleMoves;
+	}
+	
+	public ArrayList<int[]> getPossibleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		
+		ArrayList<int[]> possibleMoves = getPossibleMovesAI(playerPieces, botPieces);
+		possibleMoves.addAll(getNormalMovesAI(playerPieces, botPieces));
+		
+		int ogRow = row, ogColumn = column;
+		
+		for(int z = 0; z < possibleMoves.size(); z++) {
+			
+			row = possibleMoves.get(z)[0];
+			column = possibleMoves.get(z)[1];
+			
+			if(z >= 0 && Piece.isInCheck(player, playerPieces, botPieces)) {
+				possibleMoves.remove(z);
+				z--;
+			}
+		}
+		
+		row = ogRow;
+		column = ogColumn;
+
+		return possibleMoves;
+		
+	}
+	
 	
 	@Override
 	public void showValidMoves() {

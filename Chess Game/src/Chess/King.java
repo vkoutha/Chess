@@ -110,13 +110,13 @@ public class King implements Piece{
 		if(moveCount == 0) {
 			
 			//ALLOWS CASTLE WITH RIGHT ROOK
-			if(!isInCheck() && Tile.isOccupied(row, 7) && Tile.getPiece(row, 7).getType() == Piece.type.ROOK && Tile.getPiece(row, 7).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 5) && !Tile.isOccupied(row, 6)) { 
+			if(!Piece.isInCheck(player) && Tile.isOccupied(row, 7) && Tile.getPiece(row, 7).getType() == Piece.type.ROOK && Tile.getPiece(row, 7).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 5) && !Tile.isOccupied(row, 6)) { 
 				isCastleMoveRight = true;
 				possibleMoves.add(new int[] {row, column+2});
 			}
 			
 			//ALLOWS CASTLE WITH LEFT ROOK
-			if(!isInCheck() && Tile.isOccupied(row, 0) && Tile.getPiece(row, 0).getType() == Piece.type.ROOK && Tile.getPiece(row, 0).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 3) && !Tile.isOccupied(row, 2) && !Tile.isOccupied(row, 1)) { 
+			if(!Piece.isInCheck(player) && Tile.isOccupied(row, 0) && Tile.getPiece(row, 0).getType() == Piece.type.ROOK && Tile.getPiece(row, 0).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 3) && !Tile.isOccupied(row, 2) && !Tile.isOccupied(row, 1)) { 
 				isCastleMoveLeft = true;
 				possibleMoves.add(new int[] {row, column-2});
 			}
@@ -129,16 +129,110 @@ public class King implements Piece{
 		}
 		
 		for(int z = 0; z < possibleMoves.size(); z++) {
-			
-			if(z >= 0 && isInCheck(possibleMoves.get(z)[0], possibleMoves.get(z)[1])) {
-				
+			if(z >= 0 && Piece.isInCheck(player, possibleMoves.get(z)[0], possibleMoves.get(z)[1])) {
 				possibleMoves.remove(z);
 				z--;
-				
 			}
-			
 		}
 		
+		return possibleMoves;
+		
+	}
+	
+	private ArrayList<int[]> getPossibleCastleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+		
+		if(moveCount == 0) {
+			
+			//ALLOWS CASTLE WITH RIGHT ROOK
+			if(Tile.isOccupied(row, 7, playerPieces, botPieces) && Tile.getPiece(row, 7).getType() == Piece.type.ROOK && Tile.getPiece(row, 7).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 5, playerPieces, botPieces) && !Tile.isOccupied(row, 6, playerPieces, botPieces)) { 
+				isCastleMoveRight = true;
+				possibleMoves.add(new int[] {row, column+2});
+			}
+			
+			//ALLOWS CASTLE WITH LEFT ROOK
+			if(Tile.isOccupied(row, 0) && Tile.getPiece(row, 0, playerPieces, botPieces).getType() == Piece.type.ROOK && Tile.getPiece(row, 0, playerPieces, botPieces).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 3, playerPieces, botPieces) && !Tile.isOccupied(row, 2, playerPieces, botPieces) && !Tile.isOccupied(row, 1, playerPieces, botPieces)) { 
+				isCastleMoveLeft = true;
+				possibleMoves.add(new int[] {row, column-2});
+			}
+			
+		}else{
+			isCastleMoveRight = false;
+			isCastleMoveLeft = false;
+		}
+		
+		for(int z = 0; z < possibleMoves.size(); z++) {
+			if(z >= 0 && Piece.isInCheck(player, possibleMoves.get(z)[0], possibleMoves.get(z)[1], playerPieces, botPieces)) {
+				possibleMoves.remove(z);
+				z--;	
+			}
+		}
+		
+		return possibleMoves;
+		
+	}
+	
+	public ArrayList<int[]> getAllMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+        
+		//ALLOWS TO MOVE LEFT
+		if(column-1 >= 0 && (Tile.isOccupiedByOpponent(row, column-1, player, playerPieces, botPieces) || !Tile.isOccupied(row, column-1, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row, column-1});
+		
+		//ALLOWS TO MOVE RIGHT
+		if(column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row, column+1, player, playerPieces, botPieces) || !Tile.isOccupied(row, column+1, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row, column+1});
+		
+		//ALLOWS TO MOVE UP
+		if(row-1 >= 0 && (Tile.isOccupiedByOpponent(row-1, column, player, playerPieces, botPieces) || !Tile.isOccupied(row-1, column, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row-1, column});
+		
+		//ALLOWS TO MOVE DOWN
+		if(row+1 < GameData.ROWS && (Tile.isOccupiedByOpponent(row+1, column, player, playerPieces, botPieces) || !Tile.isOccupied(row+1, column, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row+1, column});
+		
+		//ALLOWS TO MOVE DIAGONAL UP-LEFT
+		if(row-1 >= 0 && column-1 >= 0 && (Tile.isOccupiedByOpponent(row-1, column-1, player, playerPieces, botPieces) || !Tile.isOccupied(row-1, column-1, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row-1, column-1});
+		
+		//ALLOWS TO MOVE DIAGONAL UP-RIGHT
+		if(row-1 >= 0 && column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row-1, column+1, player, playerPieces, botPieces) || !Tile.isOccupied(row-1, column+1, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row-1, column+1});
+		
+		//ALLOWS TO MOVE DIAGONAL DOWN-LEFT
+		if(row+1 < GameData.ROWS && column-1 >= 0 && (Tile.isOccupiedByOpponent(row+1, column-1, player, playerPieces, botPieces) || !Tile.isOccupied(row+1, column-1, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row+1, column-1});
+		
+		//ALLOWS TO MOVE DIAGONAL DOWN-RIGHT
+		if(row+1 < GameData.ROWS && column+1 < GameData.COLUMNS && (Tile.isOccupiedByOpponent(row+1, column+1, player, playerPieces, botPieces) || !Tile.isOccupied(row+1, column+1, playerPieces, botPieces)))
+			possibleMoves.add(new int[] {row+1, column+1});
+			
+		return possibleMoves;
+		
+	}
+	
+	public ArrayList<int[]> getPossibleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		ArrayList<int[]> possibleMoves = getAllMovesAI(playerPieces, botPieces);
+		
+		int ogRow = row, ogColumn = column;
+		for(int z = 0; z < possibleMoves.size(); z++) {
+			
+			row = possibleMoves.get(z)[0];
+			column = possibleMoves.get(z)[1];
+			
+			if(z >= 0 && Piece.isInCheck(player, playerPieces, botPieces)) {
+				possibleMoves.remove(z);
+				z--;
+			}
+		}
+		
+		row = ogRow;
+		column = ogColumn;
+		
+		possibleMoves.addAll(getPossibleCastleMovesAI(playerPieces, botPieces));
 		return possibleMoves;
 		
 	}
@@ -161,19 +255,15 @@ public class King implements Piece{
 	
 	public void move(int row, int column) {	
 		
-		if(!isInCheck()) {
+		if(isCastleMoveRight && Game.tileClicked[0] == row && Game.tileClicked[1] == 6){
 			
-			if(isCastleMoveRight && Game.tileClicked[0] == row && Game.tileClicked[1] == 6){
-				
-				Tile.getPiece(row, 7).move(row, 5);
-				isCastleMoveRight = false;
-				
-			}else if(isCastleMoveLeft && Game.tileClicked[0] == row && Game.tileClicked[1] == 2){
-				
-				Tile.getPiece(row, 0).move(row, 3);
-				isCastleMoveLeft = false;
-				
-			}
+			Tile.getPiece(row, 7).move(row, 5);
+			isCastleMoveRight = false;
+			
+		}else if(isCastleMoveLeft && Game.tileClicked[0] == row && Game.tileClicked[1] == 2){
+			
+			Tile.getPiece(row, 0).move(row, 3);
+			isCastleMoveLeft = false;
 			
 		}
 
@@ -190,78 +280,6 @@ public class King implements Piece{
 		
 		this.row = location[0];
 		this.column = location[1];
-		
-	}
-	
-	@Override
-	public boolean isInCheck() {
-		// TODO Auto-generated method stub
-
-		switch(player) {
-		
-		case PLAYER_1:
-			
-			for(int z = 0; z < Game.player2Pieces.size(); z++) 
-					for(int z1 = 0; z1 < Game.player2Pieces.get(z).getPossibleMoves().size(); z1++) 
-						if(Game.player2Pieces.get(z).getPossibleMoves().get(z1)[0] == row && Game.player2Pieces.get(z).getPossibleMoves().get(z1)[1] == column) 
-							return true;
-			break;
-			
-		case PLAYER_2:
-			
-			for(int z = 0; z < Game.player1Pieces.size(); z++) 
-					for(int z1 = 0; z1 < Game.player1Pieces.get(z).getPossibleMoves().size(); z1++)                          
-						if(Game.player1Pieces.get(z).getPossibleMoves().get(z1)[0] == row && Game.player1Pieces.get(z).getPossibleMoves().get(z1)[1] == column) 
-							return true;
-			break;
-
-		}
-		
-		return false;
-		 
-	}
-	
-	private boolean isInCheck(int row, int column) {
-		
-		int ogRow = this.row, ogColumn = this.column;
-		
-		this.row = row;
-		this.column = column;
-		
-		switch(player) {
-		
-		case PLAYER_1:
-			
-			for(int z = 0; z < Game.player2Pieces.size(); z++) 
-				for(int z1 = 0; z1 < Game.player2Pieces.get(z).getPossibleMoves().size(); z1++) 
-					if(row == Game.player2Pieces.get(z).getPossibleMoves().get(z1)[0] && column == Game.player2Pieces.get(z).getPossibleMoves().get(z1)[1]) {
-						this.row = ogRow;
-						this.column = ogColumn;
-						return true;
-					}
-					
-			break;
-			
-		
-		case PLAYER_2:
-			
-			for(int z = 0; z < Game.player1Pieces.size(); z++) 
-				
-				for(int z1 = 0; z1 < Game.player1Pieces.get(z).getPossibleMoves().size(); z1++)
-					
-					if(row == Game.player1Pieces.get(z).getPossibleMoves().get(z1)[0] && column == Game.player1Pieces.get(z).getPossibleMoves().get(z1)[1]) {
-						this.row = ogRow;
-						this.column = ogColumn;
-						return true;
-					}
-					
-			break;
-			
-		}
-		
-		this.row = ogRow;
-		this.column = ogColumn;
-		return false;
 		
 	}
 	

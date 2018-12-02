@@ -51,9 +51,6 @@ public class Rook implements Piece{
 	public void increaseMoveCount() {moveCount++;}
 
 	@Override
-	public boolean isInCheck() {return false;}
-	
-	@Override
 	public type getType() {return type;}
 	
 	@Override
@@ -168,7 +165,7 @@ public class Rook implements Piece{
 				row = possibleMoves.get(z)[0];
 				column = possibleMoves.get(z)[1];
 				
-				if(z >= 0 && Piece.getKing(player).isInCheck()) {
+				if(z >= 0 && Piece.isInCheck(player)) {
 					possibleMoves.remove(z);
 					z--;
 				}
@@ -177,6 +174,94 @@ public class Rook implements Piece{
 			row = ogRow;
 			column = ogColumn;
 
+		return possibleMoves;
+		
+	}
+	
+	public ArrayList<int[]> getAllMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+
+		if(Tile.isOccupiedByOpponent(row, column, player, playerPieces, botPieces))
+			return possibleMoves;
+		
+		//ALLOWS TO MOVE LEFT
+		for(int z = column-1; z >= 0; z--) {
+			
+			if(Tile.isOccupiedByOwn(row, z, player, playerPieces, botPieces) && !Tile.isOccupiedByOpponent(row, z, player, playerPieces, botPieces))
+				break;
+			else if(Tile.isOccupiedByOpponent(row, z, player, playerPieces, botPieces)) {
+				possibleMoves.add(new int[] {row, z});
+				break;
+			}
+			
+			possibleMoves.add(new int[] {row, z});
+			
+		}
+		
+		//ALLOWS TO MOVE RIGHT
+		for(int z = column+1; z < GameData.COLUMNS; z++) {
+			
+			if(Tile.isOccupiedByOwn(row, z, player, playerPieces, botPieces) && !Tile.isOccupiedByOpponent(row, z, player, playerPieces, botPieces))
+				break;
+			else if(Tile.isOccupiedByOpponent(row, z, player, playerPieces, botPieces)) {
+				possibleMoves.add(new int[] {row, z});
+				break;
+			}
+			
+			possibleMoves.add(new int[] {row, z});
+			
+		}
+		
+		//ALLOWS TO MOVE UP
+		for(int z = row-1; z >= 0; z--) {
+			
+			if(Tile.isOccupiedByOwn(z, column, player, playerPieces, botPieces) && !Tile.isOccupiedByOpponent(z, column, player, playerPieces, botPieces))
+				break;
+			else if(Tile.isOccupiedByOpponent(z, column, player, playerPieces, botPieces)) {
+				possibleMoves.add(new int[] {z, column});
+				break;
+		}else
+			possibleMoves.add(new int[] {z, column});
+			
+		}
+		
+		//ALOWS TO MOVE DOWN
+		for(int z = row+1; z < GameData.ROWS; z++) {
+			
+			if(Tile.isOccupiedByOwn(z, column, player, playerPieces, botPieces) && !Tile.isOccupiedByOpponent(z, column, player, playerPieces, botPieces))
+				break;
+			else if(Tile.isOccupiedByOpponent(z, column, player, playerPieces, botPieces)) {
+				possibleMoves.add(new int[] {z, column});
+				break;
+			}else	
+				possibleMoves.add(new int[] {z, column});
+		
+		}
+			
+		return possibleMoves;
+		
+	}
+	
+	public ArrayList<int[]> getPossibleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
+		
+		ArrayList<int[]> possibleMoves = getAllMovesAI(playerPieces, botPieces);
+		
+		int ogRow = row, ogColumn = column;
+		for(int z = 0; z < possibleMoves.size(); z++) {
+			
+			row = possibleMoves.get(z)[0];
+			column = possibleMoves.get(z)[1];
+			
+			if(z >= 0 && Piece.isInCheck(player, playerPieces, botPieces)) {
+				possibleMoves.remove(z);
+				z--;
+			}
+		}
+		
+		row = ogRow;
+		column = ogColumn;
+		
 		return possibleMoves;
 		
 	}

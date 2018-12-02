@@ -10,30 +10,32 @@ public class Node {
 	private int[] move;
 	private int layer, value;
 	
-	public Node(Node parent, int layer, Piece piece, int[] move, int value, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
+	public Node(Node parent, int layer, Piece piece, int[] move, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		this.parent = parent;
 		this.layer = layer;
 		this.piece = piece;
 		this.move = move;
-		this.value = value;
+		if(Tile.isOccupiedByOpponent(move[0], move[1], piece.getPlayer(), playerPieces, botPieces))
+			(piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces).remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
+		value = Minimax.getBoardValue(piece, move, playerPieces, botPieces);
 		if (layer < Game.ultraBot.movesAhead-1) {
 			int totalChildren = 0;
 			if (piece.getPlayer() == GameData.player.PLAYER_1) {
 				for(Piece pieces : botPieces) 
-					totalChildren += pieces.getPossibleMovesInCheck().size();
+					totalChildren += pieces.getPossibleMovesAI(playerPieces, botPieces).size();
 				children = new Node[totalChildren];
 				int index = 0;
 				for(Piece p : botPieces)
-					for(int[] m : p.getPossibleMovesInCheck()) 
-						children[index++] = new Node(this, layer+1, p, m, Minimax.getBoardValue(p, m, botPieces, playerPieces), Minimax.deepClone(botPieces), Minimax.deepClone(playerPieces));
+					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) 
+						children[index++] = new Node(this, layer+1, p, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
 			}else{
 				for(Piece pieces : playerPieces) 
-					totalChildren += pieces.getPossibleMovesInCheck().size();
+					totalChildren += pieces.getPossibleMovesAI(playerPieces, botPieces).size();
 				children = new Node[totalChildren];
 				int index = 0;
 				for(Piece p : playerPieces)
-					for(int[] m : p.getPossibleMovesInCheck()) 
-						children[index++] = new Node(this, layer+1, p, m, Minimax.getBoardValue(p, m, botPieces, playerPieces), Minimax.deepClone(botPieces), Minimax.deepClone(playerPieces));
+					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) 
+						children[index++] = new Node(this, layer+1, p, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
 			}
 		}
 	}

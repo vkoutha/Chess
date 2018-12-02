@@ -32,6 +32,20 @@ public class Tile {
 		return null;
 		
 	}
+	
+	public static Piece getPiece(int row, int column, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
+		
+		for(int z = 0; z < playerPieces.size(); z++) 
+			if(playerPieces.get(z).getRow() == row && playerPieces.get(z).getColumn() == column)
+				return playerPieces.get(z);
+			
+		for(int z = 0; z < botPieces.size(); z++) 
+			if(botPieces.get(z).getRow() == row && botPieces.get(z).getColumn() == column)
+				return botPieces.get(z);
+		
+		return null;
+		
+	}
 		
 	public static Color getTileColor(int row, int column) {
 		
@@ -130,21 +144,21 @@ public class Tile {
 		
 	}
 	
-	public static boolean isOccupied(int row, int column, ArrayList<Piece> player1Pieces, ArrayList<Piece> player2Pieces) {
+	public static boolean isOccupied(int row, int column, ArrayList<Piece> player1Pieces, ArrayList<Piece> botPieces) {
 		
 		for(int z = 0; z < player1Pieces.size(); z++) 
 			if(player1Pieces.get(z).getRow() == row && player1Pieces.get(z).getColumn() == column) 
 				return true;
 		
-		for(int z = 0; z < player2Pieces.size(); z++) 
-			if(player2Pieces.get(z).getRow() == row && player2Pieces.get(z).getColumn() == column) 
+		for(int z = 0; z < botPieces.size(); z++) 
+			if(botPieces.get(z).getRow() == row && botPieces.get(z).getColumn() == column) 
 				return true;
 			
 		return false;
 		
 	}
 	
-	public static boolean isOccupiedByOwn(int row, int column, GameData.player player, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
+	public static boolean isOccupiedByOwn(int row, int column, GameData.player player, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 	
 		switch(player) {
 		
@@ -163,7 +177,7 @@ public class Tile {
 		return false;	
 	}
 	
-	public static boolean isOccupiedByOpponent(int row, int column, GameData.player player, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
+	public static boolean isOccupiedByOpponent(int row, int column, GameData.player player, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		
 		switch(player) {
 		

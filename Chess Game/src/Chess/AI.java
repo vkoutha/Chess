@@ -62,7 +62,7 @@ public class AI implements Runnable{
 		
 		if (GameData.AI_LEVEL < 5) {
 			try {
-				if(Piece.getKing(player).isInCheck())
+				if(Piece.isInCheck(player))
 					Thread.sleep(random.nextInt(500)+1000);
 				else
 					Thread.sleep(random.nextInt(500)+500);
@@ -1495,13 +1495,11 @@ public class AI implements Runnable{
 		int[] ogLocation = new int[] {piece.getRow(), piece.getColumn()};
 		piece.setLocation(moveLocation);
 		
-		for(Piece opponentPiece : Game.player1Pieces)
-			if(opponentPiece.getType() == Piece.type.KING)
-				if(opponentPiece.isInCheck()) {
-					piece.setLocation(ogLocation);
-					return true;
-				}
-		
+		if(Piece.isInCheck(player == GameData.player.PLAYER_1 ? GameData.player.PLAYER_2 : GameData.player.PLAYER_1)) {
+			piece.setLocation(ogLocation);
+			return true;
+		}
+
 		piece.setLocation(ogLocation);
 		return false;
 
