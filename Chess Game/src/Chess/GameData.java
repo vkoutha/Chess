@@ -137,7 +137,7 @@ public class GameData{
 	public static final int BISHOP_VALUE = 50;
 	public static final int KNIGHT_VALUE = 50;
 	public static final int PAWN_VALUE = 1;
-	public static final int KING_VALUE = 1;
+	public static final int KING_VALUE = 5000;
 	
 //-----------------------------------------------------------------
 	

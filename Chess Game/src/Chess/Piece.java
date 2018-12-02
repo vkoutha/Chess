@@ -158,16 +158,16 @@ public interface Piece extends Serializable{
 		case PLAYER_1:
 			
 			for(int z = 0; z < botPieces.size(); z++) 
-					for(int z1 = 0; z1 < botPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).size(); z1++) 
-						if(botPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && botPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
+					for(int z1 = 0; z1 < botPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++) 
+						if(botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
 							return true;
 			break;
 			
 		case PLAYER_2:
 			
 			for(int z = 0; z < playerPieces.size(); z++) 
-					for(int z1 = 0; z1 < playerPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).size(); z1++)                          
-						if(playerPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && playerPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
+					for(int z1 = 0; z1 < playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++)                          
+						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
 							return true;
 			break;
 
@@ -180,15 +180,15 @@ public interface Piece extends Serializable{
 		
 		Piece king = Piece.getKing(player, playerPieces, botPieces);
 		int[] ogLocation = {king.getRow(), king.getColumn()};
-		Piece.getKing(player).setLocation(new int[] {row, column});
+		king.setLocation(new int[] {row, column});
 		
 		switch(player) {
 		
 		case PLAYER_1:
 			
 			for(int z = 0; z < botPieces.size(); z++) 
-					for(int z1 = 0; z1 < botPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).size(); z1++) 
-						if(botPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[0] == row && botPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[1] == column) { 
+					for(int z1 = 0; z1 < botPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++) 
+						if(botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == row && botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == column) { 
 							king.setLocation(ogLocation);
 							return true;
 						}
@@ -197,8 +197,8 @@ public interface Piece extends Serializable{
 		case PLAYER_2:
 			
 			for(int z = 0; z < playerPieces.size(); z++) 
-					for(int z1 = 0; z1 < playerPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).size(); z1++)                          
-						if(playerPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[0] == row && playerPieces.get(z).getPossibleMovesAI(playerPieces, botPieces).get(z1)[1] == column) {
+					for(int z1 = 0; z1 < playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++)                          
+						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == row && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == column) {
 							king.setLocation(ogLocation);
 							return true;
 						}

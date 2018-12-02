@@ -100,20 +100,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		start();
 		timer.start();
 		
-		playPieceSoundEffect();
-		clip.addLineListener(new LineListener() {
-
-			@Override
-			public void update(LineEvent event) {
-				// TODO Auto-generated method stub
-				if(event.getType() == event.getType().STOP) {
-					playPieceSoundEffect();
-				}
-			}
-	 		
-	 	});
-		
-		
 	}
 	
 	/**
@@ -366,9 +352,10 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				onInvalidMoveClick();
 			else
 				;
-		else if(!inPromotionMenu) {			
-			//	ultraBot.move();
-				bot.randomMove();
+		else if(!inPromotionMenu) {
+				ultraBot.move();
+			//	ultraBot = new Minimax(GameData.player.PLAYER_2, GameData.AI_LEVEL);
+			//	bot.randomMove();
 		}	
 		
 	}
@@ -438,6 +425,9 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		 if(Tile.isOccupiedByOpponent(tileClicked[0], tileClicked[1], playerTurn)) 
 				Tile.getPiece(tileClicked[0], tileClicked[1]).delete();
 		 
+		System.out.println("Previous Tile Clicked: [" + prevTileClicked[0] + "," + prevTileClicked[1] + "]");
+		System.out.println("Tile Clicked: [" + tileClicked[0] + "," + tileClicked[1] + "]");
+
 		Tile.getPiece(prevTileClicked[0], prevTileClicked[1]).move(tileClicked[0], tileClicked[1]);
 		Tile.getPiece(tileClicked[0], tileClicked[1]).increaseMoveCount();
 
@@ -450,7 +440,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		board[prevTileClicked[0]][prevTileClicked[1]].setAsTileMovedTo(true);
 
 		storeBoardData();	
-	//	Game.game.playPieceSoundEffect();	
+		game.playPieceSoundEffect();	
 		showCheckMoves();
 		resetTileClick();
 		switchPlayerTurn();
@@ -548,7 +538,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		try {
 			 
 			//InputStream pieceAudioStream = this.getClass().getResourceAsStream("ChessPieceSoundEffect.wav");
-			InputStream pieceAudioStream = this.getClass().getResourceAsStream("soviet-anthem.wav");
+			InputStream pieceAudioStream = this.getClass().getResourceAsStream("ChessPieceSoundEffect.wav");
 
 		 	AudioInputStream audio = AudioSystem.getAudioInputStream(pieceAudioStream);
 		 	

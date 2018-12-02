@@ -90,7 +90,6 @@ public class Pawn implements Piece{
 		
 	}
 
-	
 	private ArrayList<int[]> getPossibleMovesWithoutCapture(){
 		
 		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
@@ -228,10 +227,8 @@ public class Pawn implements Piece{
 		int ogRow = row, ogColumn = column;
 		
 		for(int z = 0; z < possibleMoves.size(); z++) {
-			
 			row = possibleMoves.get(z)[0];
 			column = possibleMoves.get(z)[1];
-			
 			if(z >= 0 && Piece.isInCheck(player)) {
 				possibleMoves.remove(z);
 				z--;
@@ -308,12 +305,12 @@ public class Pawn implements Piece{
 				break;
 			}
 			
-			if(Piece.isInCheck(player)) {
+			if(Piece.isInCheck(player, playerPieces, botPieces)) {
 				int ogRow = row, ogColumn = column;
 				for(int z = 0; z < possibleMoves.size(); z++) {
 					row = possibleMoves.get(z)[0];
 					column = possibleMoves.get(z)[1];
-					if(z >= 0 && Piece.isInCheck(player)) {
+					if(z >= 0 && Piece.isInCheck(player, playerPieces, botPieces)) {
 						possibleMoves.remove(z);
 						z--;
 					}
@@ -367,9 +364,8 @@ public class Pawn implements Piece{
 	
 	public ArrayList<int[]> getPossibleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
 		
-		
-		ArrayList<int[]> possibleMoves = getPossibleMovesAI(playerPieces, botPieces);
-		possibleMoves.addAll(getNormalMovesAI(playerPieces, botPieces));
+		ArrayList<int[]> possibleMoves = getAllMovesAI(playerPieces, botPieces);
+//		possibleMoves.addAll(getNormalMovesAI(playerPieces, botPieces));
 		
 		int ogRow = row, ogColumn = column;
 		
