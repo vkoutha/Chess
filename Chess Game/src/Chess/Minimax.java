@@ -26,7 +26,7 @@ public class Minimax {
 	public void move() {
 		
 		lastGeneration.clear();
-		ArrayList<Node> initialLayer = new ArrayList<Node>();
+		ArrayList<Node> initialLayer = new ArrayList<Node>();	
 		for(Piece piece : botPieces)
 			if(piece.getPossibleMovesAI(Game.player1Pieces, Game.player2Pieces).size()>0)
 				for(int[] move : piece.getPossibleMovesAI(Game.player1Pieces, Game.player2Pieces))
