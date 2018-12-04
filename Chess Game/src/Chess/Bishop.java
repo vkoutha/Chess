@@ -196,7 +196,7 @@ public class Bishop implements Piece{
 				break;	
 			}
 
-		possibleMoves.add(new int[] {zR, zC});
+			possibleMoves.add(new int[] {zR, zC});
 		
 		}
 		

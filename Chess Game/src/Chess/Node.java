@@ -10,16 +10,21 @@ public class Node {
 	private int[] originalLocation, move;
 	private int layer, value;
 	
-	public Node(Node parent, int layer, Piece piece, int[] move, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
+	public Node(Node parent, int layer, Piece piece, int[] originalLocation, int[] move, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		this.parent = parent;
 		this.layer = layer;
 		this.piece = piece;
 		this.move = move;
-		originalLocation = new int[] {piece.getRow(), piece.getColumn()};
+		this.originalLocation = originalLocation;
 		if(Tile.isOccupiedByOpponent(move[0], move[1], piece.getPlayer(), playerPieces, botPieces))
-			(piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces).remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
-		value = Minimax.getBoardValue(piece, move, playerPieces, botPieces);
+			if(piece.getPlayer() == GameData.player.PLAYER_1) 
+				botPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
+			else 
+				playerPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
+			
+		Tile.getPiece(piece.getRow(), piece.getColumn(), playerPieces, botPieces).setLocation(move);
 		piece.setLocation(move);
+		value = Minimax.getBoardValue(playerPieces, botPieces);
 		if (layer < Game.ultraBot.movesAhead+1) {
 			int totalChildren = 0, index = 0;
 			switch(piece.getPlayer()) {
@@ -31,7 +36,7 @@ public class Node {
 				for(Piece p : botPieces)
 					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) {
 						if(index < totalChildren)
-							children[index++] = new Node(this, layer+1, p, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
+							children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
 					}
 				break;
 			case PLAYER_2:
@@ -44,7 +49,7 @@ public class Node {
 					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) {
 						System.out.println("Index: " + index + ", Children size: " + children.length);
 						if(index < totalChildren)
-							children[index++] = new Node(this, layer+1, p, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
+							children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
 					}
 				break;
 			}

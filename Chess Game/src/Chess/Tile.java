@@ -144,10 +144,10 @@ public class Tile {
 		
 	}
 	
-	public static boolean isOccupied(int row, int column, ArrayList<Piece> player1Pieces, ArrayList<Piece> botPieces) {
+	public static boolean isOccupied(int row, int column, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		
-		for(int z = 0; z < player1Pieces.size(); z++) 
-			if(player1Pieces.get(z).getRow() == row && player1Pieces.get(z).getColumn() == column) 
+		for(int z = 0; z < playerPieces.size(); z++) 
+			if(playerPieces.get(z).getRow() == row && playerPieces.get(z).getColumn() == column) 
 				return true;
 		
 		for(int z = 0; z < botPieces.size(); z++) 

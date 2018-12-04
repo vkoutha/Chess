@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public interface Piece extends Serializable{
 	
-	int getColumn();
 	int getRow();
+	int getColumn();
 	int getPieceValue();
 	int getMoveCount();
 	int getMoveCountAtFirstMove();
@@ -21,7 +21,6 @@ public interface Piece extends Serializable{
 	ArrayList<int[]> getPossibleMovesInCheck();
 	ArrayList<int[]> getAllMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces);
 	ArrayList<int[]> getPossibleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces);
-	
 	
 	void increaseMoveCount();
 	void showValidMoves();
@@ -120,7 +119,7 @@ public interface Piece extends Serializable{
 		
 		Piece king = Piece.getKing(player);
 		int[] ogLocation = {king.getRow(), king.getColumn()};
-		Piece.getKing(player).setLocation(new int[] {row, column});
+		king.setLocation(new int[] {row, column});
 		switch(player) {
 		
 		case PLAYER_1:
@@ -128,7 +127,7 @@ public interface Piece extends Serializable{
 			for(int z = 0; z < Game.player2Pieces.size(); z++) 
 				for(int z1 = 0; z1 < Game.player2Pieces.get(z).getPossibleMoves().size(); z1++) 
 					if(Game.player2Pieces.get(z).getPossibleMoves().get(z1)[0] == row && Game.player2Pieces.get(z).getPossibleMoves().get(z1)[1] == column) { 
-						Piece.getKing(player).setLocation(ogLocation);
+						king.setLocation(ogLocation);
 						return true;
 					}
 						
@@ -139,7 +138,7 @@ public interface Piece extends Serializable{
 			for(int z = 0; z < Game.player1Pieces.size(); z++) 
 				for(int z1 = 0; z1 < Game.player1Pieces.get(z).getPossibleMoves().size(); z1++)                          
 						if(Game.player1Pieces.get(z).getPossibleMoves().get(z1)[0] == row && Game.player1Pieces.get(z).getPossibleMoves().get(z1)[1] == column) { 
-							Piece.getKing(player).setLocation(ogLocation);
+							king.setLocation(ogLocation);
 							return true;
 						}
 				
@@ -147,19 +146,20 @@ public interface Piece extends Serializable{
 
 		}
 		
-		Piece.getKing(player).setLocation(ogLocation);
+		king.setLocation(ogLocation);
 		return false;
 	}
 	
 	static boolean isInCheck(GameData.player player, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		
+		Piece king = getKing(player, playerPieces, botPieces);
 		switch(player) {
 		
 		case PLAYER_1:
 			
 			for(int z = 0; z < botPieces.size(); z++) 
 					for(int z1 = 0; z1 < botPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++) 
-						if(botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
+						if(botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == king.getRow() && botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == king.getColumn()) 
 							return true;
 			break;
 			
@@ -167,7 +167,7 @@ public interface Piece extends Serializable{
 			
 			for(int z = 0; z < playerPieces.size(); z++) 
 					for(int z1 = 0; z1 < playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++)                          
-						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
+						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == king.getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == king.getColumn()) 
 							return true;
 			break;
 
@@ -210,7 +210,6 @@ public interface Piece extends Serializable{
 		king.setLocation(ogLocation);
 		return false;
 	}
-	
 	
 	static int getTotalPieceValue(GameData.player player) {
 		

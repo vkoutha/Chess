@@ -185,10 +185,10 @@ public class King implements Piece{
 		
 		ArrayList<int[]> possibleMoves = getAllMovesAI(playerPieces, botPieces);
 		
-		if(moveCount == 0) {
+	/*	if(moveCount == 0) {
 			
 			//ALLOWS CASTLE WITH RIGHT ROOK
-			if(Tile.isOccupied(row, 7, playerPieces, botPieces) && Tile.getPiece(row, 7).getType() == Piece.type.ROOK && Tile.getPiece(row, 7).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 5, playerPieces, botPieces) && !Tile.isOccupied(row, 6, playerPieces, botPieces)) { 
+			if(Tile.isOccupied(row, 7, playerPieces, botPieces) && Tile.getPiece(row, 7, playerPieces, botPieces).getType() == Piece.type.ROOK && Tile.getPiece(row, 7, playerPieces, botPieces).getMoveCount() == 0  && moveCount == 0 && !Tile.isOccupied(row, 5, playerPieces, botPieces) && !Tile.isOccupied(row, 6, playerPieces, botPieces)) { 
 				isCastleMoveRight = true;
 				possibleMoves.add(new int[] {row, column+2});
 			}
@@ -209,7 +209,7 @@ public class King implements Piece{
 				possibleMoves.remove(z);
 				z--;	
 			}
-		}
+		}*/
 		
 		int ogRow = row, ogColumn = column;
 		for(int z = 0; z < possibleMoves.size(); z++) {

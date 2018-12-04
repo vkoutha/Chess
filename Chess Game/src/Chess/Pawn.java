@@ -365,7 +365,7 @@ public class Pawn implements Piece{
 	public ArrayList<int[]> getPossibleMovesAI(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces){
 		
 		ArrayList<int[]> possibleMoves = getAllMovesAI(playerPieces, botPieces);
-//		possibleMoves.addAll(getNormalMovesAI(playerPieces, botPieces));
+		possibleMoves.addAll(getNormalMovesAI(playerPieces, botPieces));
 		
 		int ogRow = row, ogColumn = column;
 		
