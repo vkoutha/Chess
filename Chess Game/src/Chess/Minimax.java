@@ -17,11 +17,11 @@ public class Minimax {
 	
 	public void move() {
 		if(player == GameData.player.PLAYER_1) {
-			playerPieces = deepClone(Game.player2Pieces);
-			botPieces = deepClone(Game.player1Pieces);
+			playerPieces = (Game.player2Pieces);
+			botPieces = (Game.player1Pieces);
 		}else{
-			playerPieces = deepClone(Game.player1Pieces);
-			botPieces = deepClone(Game.player2Pieces);
+			playerPieces = (Game.player1Pieces);
+			botPieces = (Game.player2Pieces);
 		}
 		lastGeneration.clear();
 		ArrayList<Node> initialLayer = new ArrayList<Node>();
@@ -29,10 +29,9 @@ public class Minimax {
 		//	piece.getPossibleMovesAI(playerPieces, botPieces).forEach(move -> {initialLayer.add(new Node(null, 1, piece, new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));});
 	//	});
 //		d = 0;
-		for(Piece piece : botPieces){
+		for(Piece piece : botPieces)
 			for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces))
 				initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
-		}
 		
 		System.out.println("Initial Layer size: "  + initialLayer.size());
 		Node bestNode = null;
@@ -41,8 +40,8 @@ public class Minimax {
 		System.out.println("\n\n\n\n\n\n\n\n\n\n");
 		for(Node node : lastGeneration) {
 			if(node != null)
-			System.out.println("-------------------------------------------\n"+node+"\n--------------------------------------------------");
-			System.out.println("WOW!!");
+		//	System.out.println("-------------------------------------------\n"+node+"\n--------------------------------------------------");
+		//	System.out.println("WOW!!");
 			if(node.getValue() < lowestVal) {
 				bestNode = node;
 				lowestVal = node.getValue();

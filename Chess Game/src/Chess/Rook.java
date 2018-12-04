@@ -250,8 +250,7 @@ public class Rook implements Piece{
 		int ogRow = row, ogColumn = column;
 		for(int z = 0; z < possibleMoves.size(); z++) {
 			
-			row = possibleMoves.get(z)[0];
-			column = possibleMoves.get(z)[1];
+			setLocation(possibleMoves.get(z));
 			
 			if(z >= 0 && Piece.isInCheck(player, playerPieces, botPieces)) {
 				possibleMoves.remove(z);
