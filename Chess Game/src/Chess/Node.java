@@ -34,9 +34,10 @@ public class Node {
 				children = new Node[totalChildren];
 				System.out.println("Size: " + children.length);
 				for(Piece p : botPieces)
-					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) {
-						if(index < totalChildren)
-							children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
+					if(p.getPossibleMovesAI(playerPieces, botPieces).size()>0)
+						for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) {
+							if(index < totalChildren)
+								children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
 					}
 				break;
 			case PLAYER_2:
@@ -46,11 +47,12 @@ public class Node {
 				children = new Node[totalChildren];
 				System.out.println("Children size: " + children.length);
 				for(Piece p : playerPieces)
-					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) {
-						System.out.println("Index: " + index + ", Children size: " + children.length);
-						if(index < totalChildren)
-							children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
-					}
+					if(p.getPossibleMovesAI(playerPieces, botPieces).size()>0)
+						for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) {
+							System.out.println("Index: " + index + ", Children size: " + children.length);
+							if(index < totalChildren)
+								children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));
+						}
 				break;
 			}
 			

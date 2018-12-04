@@ -66,7 +66,7 @@ public interface Piece extends Serializable{
 					
 	}
 	
-	static Piece getKing(GameData.player player, ArrayList<Piece> botPieces, ArrayList<Piece> playerPieces) {
+	static Piece getKing(GameData.player player, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		
 		switch (player) {
 		
@@ -152,14 +152,13 @@ public interface Piece extends Serializable{
 	
 	static boolean isInCheck(GameData.player player, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		
-		Piece king = getKing(player, playerPieces, botPieces);
-		switch(player) {
+	switch(player) {
 		
 		case PLAYER_1:
 			
 			for(int z = 0; z < botPieces.size(); z++) 
 					for(int z1 = 0; z1 < botPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++) 
-						if(botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == king.getRow() && botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == king.getColumn()) 
+						if(botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && botPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
 							return true;
 			break;
 			
@@ -167,7 +166,7 @@ public interface Piece extends Serializable{
 			
 			for(int z = 0; z < playerPieces.size(); z++) 
 					for(int z1 = 0; z1 < playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++)                          
-						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == king.getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == king.getColumn()) 
+						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
 							return true;
 			break;
 

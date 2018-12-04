@@ -318,7 +318,6 @@ public class Pawn implements Piece{
 				column = ogColumn;
 			}
 			
-			
 			return possibleMoves;	
 		
 	}
