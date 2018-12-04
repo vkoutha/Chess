@@ -78,6 +78,28 @@ public class Minimax {
 		return boardValue;
 	}
 	
+	public static Node getBestNode(Node[] children) {
+		Node bestNode = null;
+		int highestVal = -1000000, lowestVal = 1000000;
+		for(Node node : children) {
+			switch(node.getPiece().getPlayer()) {
+			case PLAYER_1:
+				if(node.getValue() > highestVal) {
+					bestNode = node;
+					highestVal = bestNode.getValue();
+				}
+				break;
+			case PLAYER_2:
+				if(node.getValue() < lowestVal) {
+					bestNode = node;
+					lowestVal = bestNode.getValue();
+				}
+				break;
+			}
+		}
+		return bestNode;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Piece> clone(ArrayList<Piece> arrList){
 		return (ArrayList<Piece>) arrList.clone();
