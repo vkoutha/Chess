@@ -9,33 +9,48 @@ public class Minimax {
 	ArrayList<Node> lastGeneration;
 	GameData.player player;
 	int movesAhead;
+	int totalNodes = 0;
+	boolean inMove = false;
 	
 	public Minimax(GameData.player player, int movesAhead) {
 		this.player = player;
 		this.movesAhead = movesAhead;
 		lastGeneration = new ArrayList<Node>();
 		if(player == GameData.player.PLAYER_1) {
-			playerPieces = (Game.player2Pieces);
-			botPieces = (Game.player1Pieces);
+			playerPieces = deepClone(Game.player2Pieces);
+			botPieces = deepClone(Game.player1Pieces);
 		}else{
-			playerPieces = (Game.player1Pieces);
-			botPieces = (Game.player2Pieces);
+			playerPieces = deepClone(Game.player1Pieces);
+			botPieces = deepClone(Game.player2Pieces);
 		}
 	}
 	
 	public void move() {
 		
+		inMove = true;
 		lastGeneration.clear();
 		ArrayList<Node> initialLayer = new ArrayList<Node>();	
 		for(Piece piece : botPieces)
-			if(piece.getPossibleMovesAI(Game.player1Pieces, Game.player2Pieces).size()>0)
-				for(int[] move : piece.getPossibleMovesAI(Game.player1Pieces, Game.player2Pieces))
-					initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
+			if(piece.getPossibleMovesAI(playerPieces, botPieces).size()>0)
+				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) 
+							initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
+						
 		Node bestNode = null;
+		System.out.println("Last generation size: " + lastGeneration.size());
 		bestNode = getBestNode(lastGeneration);
 		Game.prevTileClicked = bestNode.getRoot().getOriginalLocation();
 		Game.tileClicked = bestNode.getRoot().getMove();
+		System.out.println("Prev tile Clicked is: " + Game.prevTileClicked[0] + "," + Game.prevTileClicked[1]);
+		System.out.println("Tile Clicked is: " + Game.tileClicked[0] + "," + Game.tileClicked[1]);
+		inMove = false;
+		try {
 		Game.onValidMoveClick();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("TOTAL NODES FOR MOVE: " + totalNodes);
+		totalNodes = 0;
+	
 	}
 
 	//Returns board value for piece after moving to certain location

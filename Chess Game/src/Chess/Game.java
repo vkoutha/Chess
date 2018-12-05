@@ -158,7 +158,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 //---------------------------------------------------------------------------------------------------------------------------------------
 	
 		bot = new AI();
-		ultraBot = new Minimax(GameData.player.PLAYER_2, GameData.AI_LEVEL);
 		storeBoardData();
 		
 	}
@@ -255,7 +254,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 * Called from actionPerformed. Checks for player moves 
 	 */
 	private void update() {
-	
+		
 		if (winner == null) 
 			checkForMoves();
 		
@@ -343,7 +342,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	private void checkForMoves(){
 		
-		if (!GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1) 
+		if (!GameData.singlePlayer || playerTurn == GameData.player.PLAYER_1 && ultraBot != null && ultraBot.inMove == false) 
 			if(isNewPieceClick()) 
 				onNewPieceSelection();
 			else if(isValidMoveClick())
@@ -352,10 +351,18 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 				onInvalidMoveClick();
 			else
 				;
-		else if(!inPromotionMenu) {
-				ultraBot.move();
+		else if(!inPromotionMenu && ultraBot != null && ultraBot.inMove == false) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					resetTileClick();
+					ultraBot.move();
+					//bot.randomMove();
+
+				}
+			}).start();
 			//	ultraBot = new Minimax(GameData.player.PLAYER_2, GameData.AI_LEVEL);
-			//	bot.randomMove();
 		}	
 		
 	}
@@ -421,6 +428,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public static void onValidMoveClick() {
 			
+
 		//Deletes a piece if opponent piece moves to its tile
 		 if(Tile.isOccupiedByOpponent(tileClicked[0], tileClicked[1], playerTurn)) 
 				Tile.getPiece(tileClicked[0], tileClicked[1]).delete();
@@ -689,7 +697,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		
 		renderer.repaint();
 		
-		if(gameState == GameData.gameState.IN_GAME) 
+		if(ultraBot != null && ultraBot.inMove == false && gameState == GameData.gameState.IN_GAME) 
 			update();
 		
 	}
@@ -703,7 +711,7 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 		
 		try {
 			
-			if(gameState == GameData.gameState.IN_GAME) {
+			if(gameState == GameData.gameState.IN_GAME && ultraBot != null && ultraBot.inMove == false) {
 				
 				if(tileClicked != null)
 					prevTileClicked = tileClicked;

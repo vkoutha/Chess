@@ -231,7 +231,8 @@ public class GameCreationMenu {
 		
 		Game.frame.setVisible(true);
 		Game.gameState = GameData.gameState.IN_GAME;
-		
+		Game.ultraBot = new Minimax(GameData.player.PLAYER_2, GameData.AI_LEVEL);
+
 		frame.dispose();
 		
 	}
