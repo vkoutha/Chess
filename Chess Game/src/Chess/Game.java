@@ -352,17 +352,17 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 			else
 				;
 		else if(!inPromotionMenu && ultraBot != null && ultraBot.inMove == false) {
+		//	bot.randomMove();
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					resetTileClick();
 					ultraBot.move();
+					resetTileClick();
 					//bot.randomMove();
 
 				}
 			}).start();
-			//	ultraBot = new Minimax(GameData.player.PLAYER_2, GameData.AI_LEVEL);
 		}	
 		
 	}
@@ -428,7 +428,6 @@ public class Game implements ActionListener, MouseListener, KeyListener{
 	 */
 	public static void onValidMoveClick() {
 			
-
 		//Deletes a piece if opponent piece moves to its tile
 		 if(Tile.isOccupiedByOpponent(tileClicked[0], tileClicked[1], playerTurn)) 
 				Tile.getPiece(tileClicked[0], tileClicked[1]).delete();

@@ -1,6 +1,5 @@
 package Chess;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Minimax {
@@ -16,6 +15,11 @@ public class Minimax {
 		this.player = player;
 		this.movesAhead = movesAhead;
 		lastGeneration = new ArrayList<Node>();
+	}
+	
+	public void move() {
+		inMove = true;
+		Node[][] bestMoves = new Node[20][movesAhead];
 		if(player == GameData.player.PLAYER_1) {
 			playerPieces = deepClone(Game.player2Pieces);
 			botPieces = deepClone(Game.player1Pieces);
@@ -23,18 +27,12 @@ public class Minimax {
 			playerPieces = deepClone(Game.player1Pieces);
 			botPieces = deepClone(Game.player2Pieces);
 		}
-	}
-	
-	public void move() {
-		
-		inMove = true;
 		lastGeneration.clear();
-		ArrayList<Node> initialLayer = new ArrayList<Node>();	
+		Node[] initialLayer = new Node[20];	
 		for(Piece piece : botPieces)
 			if(piece.getPossibleMovesAI(playerPieces, botPieces).size()>0)
-				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) 
-							initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
-						
+				for(int i = 0; i < piece.getPossibleMovesAI(playerPieces, botPieces).size(); i++) 
+							initialLayer[i] = (new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, piece.getPossibleMovesAI(playerPieces, botPieces).get(i), deepClone(playerPieces), deepClone(botPieces)));
 		Node bestNode = null;
 		System.out.println("Last generation size: " + lastGeneration.size());
 		bestNode = getBestNode(lastGeneration);
@@ -42,15 +40,11 @@ public class Minimax {
 		Game.tileClicked = bestNode.getRoot().getMove();
 		System.out.println("Prev tile Clicked is: " + Game.prevTileClicked[0] + "," + Game.prevTileClicked[1]);
 		System.out.println("Tile Clicked is: " + Game.tileClicked[0] + "," + Game.tileClicked[1]);
-		inMove = false;
-		try {
 		Game.onValidMoveClick();
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
 		System.out.println("TOTAL NODES FOR MOVE: " + totalNodes);
 		totalNodes = 0;
-	
+		inMove = false;
+		lastGeneration.clear();
 	}
 
 	//Returns board value for piece after moving to certain location
@@ -106,7 +100,6 @@ public class Minimax {
 		}
 		return bestNode;
 	}
-
 	
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Piece> clone(ArrayList<Piece> arrList){
