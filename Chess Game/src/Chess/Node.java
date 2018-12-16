@@ -17,24 +17,26 @@ public class Node {
 		this.move = move;
 		this.originalLocation = originalLocation;
 		Game.ultraBot.totalNodes++;
-		if(Tile.isOccupiedByOpponent(move[0], move[1], piece.getPlayer(), playerPieces, botPieces))
-			if(piece.getPlayer() == GameData.player.PLAYER_1) 
-				botPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
-			else 
-				playerPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
-		Tile.getPiece(piece.getRow(), piece.getColumn(), playerPieces, botPieces).setLocation(move);
-		piece.setLocation(move);
-		value = Minimax.getBoardValue(playerPieces, botPieces);
-		if (layer < Game.ultraBot.movesAhead+1) {
-			int totalChildren = 0, index = 0;
-			for(Piece pieces : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces)) 
-				totalChildren += pieces.getPossibleMovesAI(playerPieces, botPieces).size();
-			children = new Node[totalChildren];
-			for(Piece p : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces))
-				for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) 
-					children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));	
-		}else if(layer == Game.ultraBot.movesAhead+1) 
-			Game.ultraBot.lastGeneration.add(this);
+		if(Math.abs(value) > Game.ultraBot.bestMoves[Minimax.getIndex(this, Game.ultraBot.initialLayer)][layer-1].getValue()) {
+			if(Tile.isOccupiedByOpponent(move[0], move[1], piece.getPlayer(), playerPieces, botPieces))
+				if(piece.getPlayer() == GameData.player.PLAYER_1) 
+					botPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
+				else 
+					playerPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
+			Tile.getPiece(piece.getRow(), piece.getColumn(), playerPieces, botPieces).setLocation(move);
+			piece.setLocation(move);
+			value = Minimax.getBoardValue(playerPieces, botPieces);
+			if (layer < Game.ultraBot.movesAhead+1) {
+				int totalChildren = 0, index = 0;
+				for(Piece pieces : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces)) 
+					totalChildren += pieces.getPossibleMovesAI(playerPieces, botPieces).size();
+				children = new Node[totalChildren];
+				for(Piece p : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces))
+					for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) 
+						children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));	
+			}else if(layer == Game.ultraBot.movesAhead+1) 
+				Game.ultraBot.lastGeneration.add(this);
+		}
 	}
 	
 	public Node getParent() {return parent;}

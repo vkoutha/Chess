@@ -6,6 +6,8 @@ public class Minimax {
 
 	ArrayList<Piece> playerPieces, botPieces;
 	ArrayList<Node> lastGeneration;
+	ArrayList<Node> initialLayer;
+	Node[][] bestMoves;
 	GameData.player player;
 	int movesAhead;
 	int totalNodes = 0;
@@ -15,11 +17,11 @@ public class Minimax {
 		this.player = player;
 		this.movesAhead = movesAhead;
 		lastGeneration = new ArrayList<Node>();
+		bestMoves = new Node[20][movesAhead];
 	}
 	
 	public void move() {
 		inMove = true;
-		Node[][] bestMoves = new Node[20][movesAhead];
 		if(player == GameData.player.PLAYER_1) {
 			playerPieces = deepClone(Game.player2Pieces);
 			botPieces = deepClone(Game.player1Pieces);
@@ -28,11 +30,11 @@ public class Minimax {
 			botPieces = deepClone(Game.player2Pieces);
 		}
 		lastGeneration.clear();
-		Node[] initialLayer = new Node[20];	
+		initialLayer = new ArrayList<Node>();
 		for(Piece piece : botPieces)
 			if(piece.getPossibleMovesAI(playerPieces, botPieces).size()>0)
-				for(int i = 0; i < piece.getPossibleMovesAI(playerPieces, botPieces).size(); i++) 
-							initialLayer[i] = (new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, piece.getPossibleMovesAI(playerPieces, botPieces).get(i), deepClone(playerPieces), deepClone(botPieces)));
+				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) 
+							initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
 		Node bestNode = null;
 		System.out.println("Last generation size: " + lastGeneration.size());
 		bestNode = getBestNode(lastGeneration);
@@ -111,6 +113,20 @@ public class Minimax {
 		for(Piece piece : arrList)
 			arrListCopy.add(piece.clone());
 		return arrListCopy;
+	}
+	
+	public static <T> int getIndex(T var, T[] arr) {
+		for(int i = 0; i < arr.length; i++)
+			if(var == arr[i] || var.equals(arr[i]))
+				return i;
+		return -1;
+	}
+	
+	public static <T> int getIndex(T var, ArrayList<T> arrList) {
+		for(int i = 0; i < arrList.size(); i++)
+			if(var == arrList.get(i) || var.equals(arrList.get(i)))
+				return i;
+		return -1;
 	}
 	
 }
