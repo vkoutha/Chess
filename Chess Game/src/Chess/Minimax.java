@@ -16,8 +16,6 @@ public class Minimax {
 	public Minimax(GameData.player player, int movesAhead) {
 		this.player = player;
 		this.movesAhead = movesAhead;
-		lastGeneration = new ArrayList<Node>();
-		bestMoves = new Node[20][movesAhead];
 	}
 	
 	public void move() {
@@ -29,13 +27,23 @@ public class Minimax {
 			playerPieces = deepClone(Game.player1Pieces);
 			botPieces = deepClone(Game.player2Pieces);
 		}
-		lastGeneration.clear();
 		initialLayer = new ArrayList<Node>();
+		lastGeneration = new ArrayList<Node>();
 		for(Piece piece : botPieces)
 			if(piece.getPossibleMovesAI(playerPieces, botPieces).size()>0)
 				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) 
 							initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
-		Node bestNode = null;
+		bestMoves = new Node[initialLayer.size()][movesAhead];
+		for(int i = 0; i < initialLayer.size(); i++) {
+			bestMoves[i][0] = initialLayer.get(i).getBestChild();
+			for(int i2 = 1; i2 < movesAhead; i2++)
+				bestMoves[i][i2] = bestMoves[i][i2-1].getBestChild();
+		}
+		ArrayList<Node> finalNodes = new ArrayList<Node>();
+		for(int i = 0; i < initialLayer.size(); i++){
+			finalNodes.add(bestMoves[i][movesAhead-1]);
+		}
+		Node bestNode = getBestNode(finalNodes);
 		System.out.println("Last generation size: " + lastGeneration.size());
 		bestNode = getBestNode(lastGeneration);
 		Game.prevTileClicked = bestNode.getRoot().getOriginalLocation();
@@ -46,36 +54,25 @@ public class Minimax {
 		System.out.println("TOTAL NODES FOR MOVE: " + totalNodes);
 		totalNodes = 0;
 		inMove = false;
-		lastGeneration.clear();
 	}
 
 	//Returns board value for piece after moving to certain location
 	public static int getBoardValue(ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		int boardValue = 0;
-		for(Piece own : botPieces) 
-			boardValue -= own.getPieceValue();
-		for(Piece opponent : playerPieces) 
-			boardValue += opponent.getPieceValue();
+		for(Piece botPiece : botPieces) 
+			boardValue -= botPiece.getPieceValue();
+		for(Piece playerPiece : playerPieces) 
+			boardValue += playerPiece.getPieceValue();
 		return boardValue;
 	}
 	
 	public static Node getBestNode(Node[] children) {
 		Node bestNode = null;
-		int highestVal = -1000000, lowestVal = 1000000;
+		int highestVal = -1000000;
 		for(Node node : children) {
-			switch(node.getPiece().getPlayer()) {
-			case PLAYER_1:
-				if(node.getValue() > highestVal) {
-					bestNode = node;
-					highestVal = bestNode.getValue();
-				}
-				break;
-			case PLAYER_2:
-				if(node.getValue() < lowestVal) {
-					bestNode = node;
-					lowestVal = bestNode.getValue();
-				}
-				break;
+			if(Math.abs(node.getValue()) > highestVal) {
+				bestNode = node;
+				highestVal = node.getValue();
 			}
 		}
 		return bestNode;
@@ -83,21 +80,11 @@ public class Minimax {
 	
 	public static Node getBestNode(ArrayList<Node> children) {
 		Node bestNode = null;
-		int highestVal = -1000000, lowestVal = 1000000;
+		int highestVal = -1000000;
 		for(Node node : children) {
-			switch(node.getPiece().getPlayer()) {
-			case PLAYER_1:
-				if(node.getValue() < lowestVal) {
-					bestNode = node;
-					lowestVal = bestNode.getValue();
-				}
-				break;
-			case PLAYER_2:
-				if(node.getValue() > highestVal) {
-					bestNode = node;
-					highestVal = bestNode.getValue();
-				}
-				break;
+			if(Math.abs(node.getValue()) > highestVal) {
+				bestNode = node;
+				highestVal = node.getValue();
 			}
 		}
 		return bestNode;
