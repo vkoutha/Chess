@@ -33,8 +33,24 @@ public class Node {
 			for(Piece p : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces))
 				for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) 
 					children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));	
-		}else if(layer == Game.ultraBot.movesAhead+1) 
+		}else if(layer == Game.ultraBot.movesAhead+1) {
 			Game.ultraBot.lastGeneration.add(this);
+			Node lastNode = getRoot();
+			do {
+				Node[] children = lastNode.getChildren();
+				if(children[children.length-1] == null)
+					return;
+				lastNode = children[children.length-1];
+				System.out.println("Checking layer " + lastNode.layer);
+			}while(children != null);
+			
+			if(this == lastNode || this.equals(lastNode)) {
+				Game.ultraBot.initialLayerFinished[Minimax.getIndex(getRoot(), Game.ultraBot.initialLayer)] = true;
+				System.out.println("got to this");
+			}else
+				System.out.println("not equal!!!");
+ 		}
+		
 	}
 	
 	public Node getParent() {return parent;}
@@ -46,12 +62,6 @@ public class Node {
 	public int[] getMove() {return move;}
 	
 	public int getValue() {return value;}
-	
-	public boolean isBestChild() {
-		if(this == Minimax.getBestNode(parent.getChildren()))
-			return true;
-		return false;
-	}
 	
 	public Node getBestChild() {return Minimax.getBestNode(children);}
 
