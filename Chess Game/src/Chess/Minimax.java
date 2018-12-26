@@ -6,12 +6,12 @@ public class Minimax {
 
 	private ArrayList<Piece> playerPieces, botPieces;
 	public ArrayList<Node> lastGeneration;
-	public ArrayList<Node> initialLayer;
-	public boolean[] initialLayerFinished;
+	public Node[] initialLayer;
 	private Node[][] bestMoves;
 	public GameData.player player;
-	public int movesAhead;
-	public int totalNodes = 0;
+	public int movesAhead, totalNodes = 0;
+	private int count = 0;
+	public boolean[] initialLayerFinished;
 	public boolean inMove = false;
 	
 	public Minimax(GameData.player player, int movesAhead) {
@@ -21,6 +21,7 @@ public class Minimax {
 	
 	public void move() {
 		inMove = true;
+		count = 0;
 		lastGeneration = new ArrayList<Node>();
 		if(player == GameData.player.PLAYER_1) {
 			playerPieces = deepClone(Game.player2Pieces);
@@ -29,44 +30,59 @@ public class Minimax {
 			playerPieces = deepClone(Game.player1Pieces);
 			botPieces = deepClone(Game.player2Pieces);
 		}
-		int count = 0;
 		for(Piece piece : botPieces)
 			for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces))
 				count++;
-		initialLayer = new ArrayList<Node>();
-		initialLayerFinished = new boolean[count];
+		initialLayer = new Node[count-1];
+		initialLayerFinished = new boolean[count-1];
+		count = 0;
 		for(Piece piece : botPieces)
-			if(piece.getPossibleMovesAI(playerPieces, botPieces).size()>0)
-				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) {
+				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) {	
 					new Thread(new Runnable() {
 						public void run() {
-							initialLayer.add(new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
+							initialLayer[count++] = (new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
 						}
 					}).start();
 				}
+		
 		boolean complete = false;
+		outerLoop:
 		while(complete == false) {
-			complete = true;
-			for(boolean finished : initialLayerFinished) {
-			//	System.out.println(finished);
-				if(finished == false)
-					complete = false;
+			System.out.println("Initial layer not added???? Size: " + initialLayer.length);
+			for(Node node : initialLayer) {
+				System.out.println(node);
+				if(node == null)
+					continue outerLoop;
 			}
-	//		System.out.println("in loop");
+			complete = true;
 		}
-		bestMoves = new Node[initialLayer.size()][movesAhead];
-		for(int i = 0; i < initialLayer.size(); i++) {
-			bestMoves[i][0] = initialLayer.get(i).getBestChild();
+		
+	/*	for(int i = 0; i < initialLayer.length; i++) {
+			Node lastChild = initialLayer[i];
+			while(lastChild.getLayer() < movesAhead+1) {
+				while(lastChild.getLastChild() == null)
+					;
+				lastChild = lastChild.getLastChild();
+			}
+			initialLayerFinished[i] = true;
+		}*/
+		
+		System.out.println("Initial Layer has been initializedd!!!");
+		
+		bestMoves = new Node[initialLayer.length][movesAhead];
+		for(int i = 0; i < initialLayer.length; i++) {
+			bestMoves[i][0] = initialLayer[i].getBestChild();
 			for(int i2 = 1; i2 < movesAhead; i2++)
 				bestMoves[i][i2] = bestMoves[i][i2-1].getBestChild();
 		}
 		ArrayList<Node> finalNodes = new ArrayList<Node>();
-		for(int i = 0; i < initialLayer.size(); i++)
+		for(int i = 0; i < initialLayer.length; i++)
 			finalNodes.add(bestMoves[i][movesAhead-1]);
 		for(Node n : finalNodes){
 			System.out.println(n);
 		}
 		System.out.println("-------------------------------------------------");
+		System.out.println(finalNodes);
 		Node bestNode = getBestNode(finalNodes);
 		System.out.println("Last generation size: " + lastGeneration.size());
 	//	bestNode = getBestNode(lastGeneration);
@@ -169,18 +185,18 @@ public class Minimax {
 		return arrListCopy;
 	}
 	
-	public static <T> int getIndex(T var, T[] arr) {
-		for(int i = 0; i < arr.length; i++)
-			if(var == arr[i] || var.equals(arr[i]))
+	public static int getIndex(Node node, Node[] arr) {
+		for(int i = 0; i < arr.length; i++) 
+			if(arr[i].equals(node))
 				return i;
-		return -1;
+			return -1;		
 	}
 	
-	public static <T> int getIndex(T var, ArrayList<T> arrList) {
-		for(int i = 0; i < arrList.size(); i++)
-			if(var == arrList.get(i) || var.equals(arrList.get(i)))
+	public static int getIndex(Node node, ArrayList<Node> list) {
+		for(int i = 0; i < list.size(); i++) 
+			if(list.get(i).equals(node))
 				return i;
-		return -1;
+			return -1;
 	}
 	
 }
