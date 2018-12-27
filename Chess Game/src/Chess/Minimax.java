@@ -21,8 +21,20 @@ public class Minimax {
 	
 	public void move() {
 		inMove = true;
-		count = 0;
-		lastGeneration = new ArrayList<Node>();
+		initializePieces();
+		initializeInitialLayer();
+		waitForInitialLayerCompletion();
+		System.out.println("Initial Layer has been initializedd!!!");
+	//	waitForLastChildCompletion();
+		System.out.println("-------------------------------------------------");
+		finalizeMove();
+		System.out.println("-------------------------------------------------");
+	//	for(Node n : initialLayer)
+		//	System.out.println(n);
+
+	}
+	
+	private void initializePieces() {
 		if(player == GameData.player.PLAYER_1) {
 			playerPieces = deepClone(Game.player2Pieces);
 			botPieces = deepClone(Game.player1Pieces);
@@ -30,62 +42,88 @@ public class Minimax {
 			playerPieces = deepClone(Game.player1Pieces);
 			botPieces = deepClone(Game.player2Pieces);
 		}
+	}
+	
+	private void initializeInitialLayer() {
+		count = 0;
 		for(Piece piece : botPieces)
 			for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces))
 				count++;
-		initialLayer = new Node[count-1];
-		initialLayerFinished = new boolean[count-1];
+		lastGeneration = new ArrayList<Node>();
+		initialLayer = new Node[count];
+		initialLayerFinished = new boolean[count];
 		count = 0;
 		for(Piece piece : botPieces)
 				for(int[] move : piece.getPossibleMovesAI(playerPieces, botPieces)) {	
 					new Thread(new Runnable() {
 						public void run() {
-							initialLayer[count++] = (new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
+							try {
+								System.out.println("layer starting");
+								initialLayer[count++] = (new Node(null, 1, piece.clone(), new int[] {piece.getRow(), piece.getColumn()}, move, deepClone(playerPieces), deepClone(botPieces)));
+								System.out.println("layer ending");
+							} catch (Exception e) {e.printStackTrace();}
 						}
 					}).start();
 				}
-		
+	}
+	
+	private void waitForInitialLayerCompletion() {
 		boolean complete = false;
 		outerLoop:
 		while(complete == false) {
-			System.out.println("Initial layer not added???? Size: " + initialLayer.length);
+			try {
+				Thread.sleep(10);
+			}catch(Exception e) {}
+		//	System.out.println("Initial layer not added???? Size: " + initialLayer.length);
 			for(Node node : initialLayer) {
-				System.out.println(node);
+				try {
+					Thread.sleep(10);
+				}catch(Exception e) {}
+			//	System.out.println(node);
 				if(node == null)
 					continue outerLoop;
 			}
 			complete = true;
 		}
-		
-	/*	for(int i = 0; i < initialLayer.length; i++) {
+	}
+	
+	private void waitForLastChildCompletion() {
+		for(int i = 0; i < initialLayer.length; i++) {
+			System.out.println("waiting for last childs!!");
 			Node lastChild = initialLayer[i];
 			while(lastChild.getLayer() < movesAhead+1) {
 				while(lastChild.getLastChild() == null)
-					;
+					System.out.println("in this loop!! Checking initial move " + i);
 				lastChild = lastChild.getLastChild();
 			}
-			initialLayerFinished[i] = true;
-		}*/
-		
-		System.out.println("Initial Layer has been initializedd!!!");
-		
+		} 
+	}
+	
+	private Node getFinalNode() {
 		bestMoves = new Node[initialLayer.length][movesAhead];
 		for(int i = 0; i < initialLayer.length; i++) {
-			bestMoves[i][0] = initialLayer[i].getBestChild();
+			System.out.println("Adding to best moves!!!!!!!!");
+			System.out.println(initialLayer[i]);
+			if(initialLayer[i].getChildren() != null)
+				bestMoves[i][0] = initialLayer[i].getBestChild();
 			for(int i2 = 1; i2 < movesAhead; i2++)
-				bestMoves[i][i2] = bestMoves[i][i2-1].getBestChild();
+				if(bestMoves[i][i2-1] != null)
+					if(bestMoves[i][i2-1].getChildren() != null)
+						bestMoves[i][i2] = bestMoves[i][i2-1].getBestChild();
 		}
 		ArrayList<Node> finalNodes = new ArrayList<Node>();
 		for(int i = 0; i < initialLayer.length; i++)
-			finalNodes.add(bestMoves[i][movesAhead-1]);
+			if(bestMoves[i][movesAhead-1] != null)
+				finalNodes.add(bestMoves[i][movesAhead-1]);
 		for(Node n : finalNodes){
-			System.out.println(n);
+		//	System.out.println(n);
 		}
-		System.out.println("-------------------------------------------------");
-		System.out.println(finalNodes);
-		Node bestNode = getBestNode(finalNodes);
+		return getBestNode(finalNodes);
+	}
+	
+	private void finalizeMove() {
+		Node bestNode = getFinalNode();
 		System.out.println("Last generation size: " + lastGeneration.size());
-	//	bestNode = getBestNode(lastGeneration);
 		Game.prevTileClicked = bestNode.getRoot().getOriginalLocation();
 		Game.tileClicked = bestNode.getRoot().getMove();
 		System.out.println("Prev tile Clicked is: " + Game.prevTileClicked[0] + "," + Game.prevTileClicked[1]);

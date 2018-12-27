@@ -8,7 +8,7 @@ public class Node {
 	private Node[] children = null;
 	private Piece piece;	
 	private int[] originalLocation, move;
-	private int layer, value;
+	private int layer, value, index;
 	
 	public Node(Node parent, int layer, Piece piece, int[] originalLocation, int[] move, ArrayList<Piece> playerPieces, ArrayList<Piece> botPieces) {
 		this.parent = parent;
@@ -17,6 +17,7 @@ public class Node {
 		this.move = move;
 		this.originalLocation = originalLocation;
 		Game.ultraBot.totalNodes++;
+	//	System.out.println("AT LAYER " + layer);
 		if(Tile.isOccupiedByOpponent(move[0], move[1], piece.getPlayer(), playerPieces, botPieces))
 			if(piece.getPlayer() == GameData.player.PLAYER_1) 
 				botPieces.remove(Tile.getPiece(move[0], move[1], playerPieces, botPieces));
@@ -26,7 +27,8 @@ public class Node {
 		piece.setLocation(move);
 		value = Minimax.getBoardValue(playerPieces, botPieces);
 		if (layer < Game.ultraBot.movesAhead+1) {
-			int totalChildren = 0, index = 0;
+			int totalChildren = 0;
+			index = 0;
 			for(Piece pieces : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces)) 
 				totalChildren += pieces.getPossibleMovesAI(playerPieces, botPieces).size();
 			if(totalChildren == 0) {
@@ -34,9 +36,10 @@ public class Node {
 				return;
 			}
 			children = new Node[totalChildren];
+			Node thisNode = this;
 			for(Piece p : (piece.getPlayer() == GameData.player.PLAYER_1 ? botPieces : playerPieces))
 				for(int[] m : p.getPossibleMovesAI(playerPieces, botPieces)) 
-					children[index++] = new Node(this, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));	
+							children[index++] = new Node(thisNode, layer+1, p.clone(), new int[] {p.getRow(), p.getColumn()}, m, Minimax.deepClone(playerPieces), Minimax.deepClone(botPieces));	
 		}else if(layer == Game.ultraBot.movesAhead+1) {
 			Game.ultraBot.lastGeneration.add(this);
 /*			Node lastNode = getRoot();

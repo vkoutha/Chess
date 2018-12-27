@@ -247,12 +247,12 @@ public class King implements Piece{
 	
 	public void move(int row, int column) {	
 		
-		if(isCastleMoveRight){
+		if(isCastleMoveRight && Game.tileClicked[0] == this.row && Game.tileClicked[1] == this.column+2){
 			
 			Tile.getPiece(row, 7).move(row, 5);
 			isCastleMoveRight = false;
 			
-		}else if(isCastleMoveLeft){
+		}else if(isCastleMoveLeft && Game.tileClicked[0] == this.row && Game.tileClicked[1] == this.column-2){
 			
 			Tile.getPiece(row, 0).move(row, 3);
 			isCastleMoveLeft = false;
