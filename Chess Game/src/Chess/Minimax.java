@@ -118,7 +118,7 @@ public class Minimax {
 		for(Node n : finalNodes){
 		//	System.out.println(n);
 		}
-		return getBestNode(finalNodes, GameData.player.PLAYER_2);
+		return getBestNode(finalNodes);
 	}
 	
 	private void finalizeMove() {
