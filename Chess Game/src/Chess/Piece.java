@@ -166,8 +166,11 @@ public interface Piece extends Serializable{
 			
 			for(int z = 0; z < playerPieces.size(); z++) 
 					for(int z1 = 0; z1 < playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).size(); z1++)                          
-						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) 
+						if(playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[0] == getKing(player, playerPieces, botPieces).getRow() && playerPieces.get(z).getAllMovesAI(playerPieces, botPieces).get(z1)[1] == getKing(player, playerPieces, botPieces).getColumn()) { 
+							System.out.println("Player piece: " + playerPieces.get(z));
+							System.out.println("King: " + getKing(player, playerPieces, botPieces));
 							return true;
+						}
 			break;
 
 		}

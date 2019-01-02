@@ -72,12 +72,12 @@ public class Minimax {
 		outerLoop:
 		while(complete == false) {
 			try {
-				Thread.sleep(10);
+				Thread.sleep(20);
 			}catch(Exception e) {}
 		//	System.out.println("Initial layer not added???? Size: " + initialLayer.length);
 			for(Node node : initialLayer) {
 				try {
-					Thread.sleep(10);
+					Thread.sleep(20);
 				}catch(Exception e) {}
 			//	System.out.println(node);
 				if(node == null)
@@ -118,7 +118,7 @@ public class Minimax {
 		for(Node n : finalNodes){
 		//	System.out.println(n);
 		}
-		return getBestNode(finalNodes);
+		return getBestNode(finalNodes, GameData.player.PLAYER_2);
 	}
 	
 	private void finalizeMove() {
@@ -148,8 +148,10 @@ public class Minimax {
 		public static Node getBestNode(Node[] children) {
 			Node bestNode = null;
 			int highestVal = -1000000, lowestVal = 1000000;
+			GameData.player player;
 			for(Node node : children) {
-				switch(node.getPiece().getPlayer()) {
+				player = node.getPiece().getPlayer() == GameData.player.PLAYER_1 ? GameData.player.PLAYER_1 : GameData.player.PLAYER_2;
+				switch(player) {
 				case PLAYER_1:
 					if(node.getValue() > highestVal) {
 						bestNode = node;
